@@ -9,238 +9,206 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body { width: 100%; height: 100%; background: #000; overflow: hidden; }
   canvas { display: block; }
-
-  /* ── CRT colour tokens ─────────────────────────────────────────────── */
   :root {
-    --crt-bg:       #000812;
-    --crt-panel:    #001a2a;
-    --crt-border:   #00ffe7;
-    --crt-teal:     #00ffe7;
-    --crt-teal-dim: #4ecdc4;
-    --crt-white:    #e8f4f0;
-    --crt-danger:   #ff4444;
-    --crt-glow:     0 0 8px #00ffe799, 0 0 18px #00ffe733;
-    --crt-font:     "Courier New", Courier, monospace;
+    --crt-bg:#000812; --crt-panel:#001a2a; --crt-border:#00ffe7;
+    --crt-teal:#00ffe7; --crt-teal-dim:#4ecdc4; --crt-white:#e8f4f0;
+    --crt-danger:#ff4444; --crt-star:#ffcc44;
+    --crt-glow:0 0 8px #00ffe799, 0 0 18px #00ffe733;
+    --crt-font:"Courier New",Courier,monospace;
   }
-
-  /* ── Panel shell ───────────────────────────────────────────────────── */
-  #planet-menu {
-    display:          none;
-    flex-direction:   column;
-    gap:              0;
-    position:         fixed;
-    z-index:          9999;
-    width:            224px;
-
-    background:       var(--crt-bg);
-    border:           1px solid var(--crt-border);
-    box-shadow:       var(--crt-glow), inset 0 0 40px #00ffe708;
-
-    font-family:      var(--crt-font);
-    font-size:        12px;
-    color:            var(--crt-white);
-
-    background-image: repeating-linear-gradient(
-      to bottom,
-      transparent 0px,
-      transparent 3px,
-      rgba(0,0,0,0.18) 3px,
-      rgba(0,0,0,0.18) 4px
-    );
-
-    clip-path: polygon(
-      0 10px, 10px 0,
-      calc(100% - 10px) 0, 100% 10px,
-      100% calc(100% - 10px), calc(100% - 10px) 100%,
-      10px 100%, 0 calc(100% - 10px)
-    );
-
-    animation: crt-flicker 8s infinite;
+  #planet-menu,#star-menu {
+    display:none; flex-direction:column; gap:0; position:fixed; z-index:9999;
+    font-family:var(--crt-font); font-size:12px; color:var(--crt-white);
+    background-image:repeating-linear-gradient(to bottom,transparent 0px,transparent 3px,rgba(0,0,0,0.18) 3px,rgba(0,0,0,0.18) 4px);
+    clip-path:polygon(0 10px,10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px));
+    animation:crt-flicker 8s infinite;
   }
-
-  @keyframes crt-flicker {
-    0%,94%,96%,100% { opacity: 1; }
-    95%             { opacity: 0.88; }
+  #planet-menu { width:238px; background:var(--crt-bg); border:1px solid var(--crt-border); box-shadow:var(--crt-glow),inset 0 0 40px #00ffe708; }
+  #star-menu   { width:248px; background:#080400; border:1px solid #ffcc44; box-shadow:0 0 8px #ffcc4499,0 0 18px #ffcc4433,inset 0 0 40px #ffcc4408; }
+  @keyframes crt-flicker { 0%,94%,96%,100%{opacity:1} 95%{opacity:0.88} }
+  #planet-menu-header,#star-menu-header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:7px 10px 6px; border-bottom:1px solid #00ffe733; background:#00ffe709;
   }
-
-  /* ── Header bar ────────────────────────────────────────────────────── */
-  #planet-menu-header {
-    display:         flex;
-    align-items:     center;
-    justify-content: space-between;
-    padding:         7px 10px 6px;
-    border-bottom:   1px solid #00ffe733;
-    background:      #00ffe709;
-  }
-
-  #planet-menu-title {
-    font-size:      10px;
-    letter-spacing: 5px;
-    color:          var(--crt-teal);
-    text-shadow:    0 0 10px #00ffe7aa;
-    text-transform: uppercase;
-  }
-
-  #planet-menu-title::after {
-    content:   "_";
-    animation: crt-blink 1.1s step-end infinite;
-  }
+  #star-menu-header { border-bottom:1px solid #ffcc4433; background:#ffcc4409; }
+  #planet-menu-title { font-size:10px; letter-spacing:5px; color:var(--crt-teal); text-shadow:0 0 10px #00ffe7aa; text-transform:uppercase; }
+  #star-menu-title   { font-size:10px; letter-spacing:5px; color:#ffcc44; text-shadow:0 0 10px #ffcc44aa; text-transform:uppercase; }
+  #planet-menu-title::after,#star-menu-title::after { content:"_"; animation:crt-blink 1.1s step-end infinite; }
   @keyframes crt-blink { 0%,100%{opacity:1} 50%{opacity:0} }
-
-  #planet-menu-header::before,
-  #planet-menu-header::after {
-    content:  "◆";
-    font-size: 6px;
-    color:    var(--crt-teal);
-    opacity:  0.5;
+  #planet-menu-header::before,#planet-menu-header::after { content:"◆"; font-size:6px; color:var(--crt-teal); opacity:0.5; }
+  #star-menu-header::before,#star-menu-header::after     { content:"★"; font-size:6px; color:#ffcc44; opacity:0.5; }
+  #planet-menu-body,#star-menu-body { padding:10px 10px 8px; display:flex; flex-direction:column; gap:5px; }
+  .pm-row { display:flex; align-items:center; gap:6px; }
+  .pm-label { width:52px; flex-shrink:0; font-size:9px; letter-spacing:3px; color:var(--crt-teal-dim); text-transform:uppercase; }
+  .sm-label { width:52px; flex-shrink:0; font-size:9px; letter-spacing:3px; color:#cc9922; text-transform:uppercase; }
+  .pm-input,.sm-input {
+    flex:1; font-family:var(--crt-font); font-size:12px;
+    padding:3px 6px; outline:none; transition:border-color 0.15s,box-shadow 0.15s;
+    clip-path:polygon(0 4px,4px 0,calc(100% - 4px) 0,100% 4px,100% calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,0 calc(100% - 4px));
   }
-
-  /* ── Body padding ──────────────────────────────────────────────────── */
-  #planet-menu-body {
-    padding:        10px 10px 8px;
-    display:        flex;
-    flex-direction: column;
-    gap:            6px;
+  .pm-input { background:#00ffe70a; border:1px solid #00ffe733; color:var(--crt-white); }
+  .pm-input:focus { border-color:var(--crt-teal); box-shadow:0 0 6px #00ffe766; background:#00ffe714; }
+  .sm-input { background:#ffcc440a; border:1px solid #ffcc4433; color:var(--crt-white); }
+  .sm-input:focus { border-color:#ffcc44; box-shadow:0 0 6px #ffcc4466; background:#ffcc4414; }
+  .pm-input::-webkit-inner-spin-button,.pm-input::-webkit-outer-spin-button,
+  .sm-input::-webkit-inner-spin-button,.sm-input::-webkit-outer-spin-button { -webkit-appearance:none; }
+  .pm-input[type=number],.sm-input[type=number] { -moz-appearance:textfield; }
+  /* readonly velocity display - shows live value, click to enable edit */
+  .pm-input.live-display { cursor:text; border-style:dashed; }
+  .sm-input.live-display { cursor:text; border-style:dashed; }
+  /* info row - gravity/temp display */
+  .pm-info-row { display:flex; align-items:center; gap:6px; background:#00ffe708; border:1px solid #00ffe722; padding:3px 6px;
+    clip-path:polygon(0 4px,4px 0,calc(100% - 4px) 0,100% 4px,100% calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,0 calc(100% - 4px)); }
+  .sm-info-row { display:flex; align-items:center; gap:6px; background:#ffcc4408; border:1px solid #ffcc4422; padding:3px 6px;
+    clip-path:polygon(0 4px,4px 0,calc(100% - 4px) 0,100% 4px,100% calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,0 calc(100% - 4px)); }
+  .pm-info-label { font-size:9px; letter-spacing:2px; color:var(--crt-teal-dim); text-transform:uppercase; white-space:nowrap; flex-shrink:0; }
+  .sm-info-label { font-size:9px; letter-spacing:2px; color:#cc9922; text-transform:uppercase; white-space:nowrap; flex-shrink:0; }
+  .pm-info-val { flex:1; text-align:right; font-size:11px; color:#7ef7ff; text-shadow:0 0 8px #7ef7ff88; }
+  .sm-info-val { flex:1; text-align:right; font-size:11px; color:#ffdd66; text-shadow:0 0 8px #ffdd6688; }
+  /* editable temp field inline */
+  .pm-temp-input,.sm-temp-input {
+    width:58px; font-family:var(--crt-font); font-size:11px; padding:1px 4px; outline:none;
+    clip-path:polygon(0 3px,3px 0,calc(100% - 3px) 0,100% 3px,100% calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,0 calc(100% - 3px));
+    text-align:right;
   }
-
-  /* ── Field rows ────────────────────────────────────────────────────── */
-  .pm-row {
-    display:     flex;
-    align-items: center;
-    gap:         6px;
+  .pm-temp-input { background:#00ffe710; border:1px solid #00ffe740; color:#7ef7ff; }
+  .pm-temp-input:focus { border-color:var(--crt-teal); box-shadow:0 0 4px #00ffe744; }
+  .sm-temp-input { background:#ffcc4410; border:1px solid #ffcc4440; color:#ffdd66; }
+  .sm-temp-input:focus { border-color:#ffcc44; box-shadow:0 0 4px #ffcc4444; }
+  .pm-temp-input::-webkit-inner-spin-button,.sm-temp-input::-webkit-inner-spin-button,
+  .pm-temp-input::-webkit-outer-spin-button,.sm-temp-input::-webkit-outer-spin-button { -webkit-appearance:none; }
+  .pm-temp-input[type=number],.sm-temp-input[type=number] { -moz-appearance:textfield; }
+  /* bar */
+  .pm-bar-wrap { height:3px; background:#00ffe718; }
+  .pm-bar { height:3px; background:linear-gradient(to right,#00ffe7,#7ef7ff); width:0%; transition:width 0.15s; }
+  .sm-bar-wrap { height:3px; background:#ffcc4418; }
+  .sm-bar { height:3px; background:linear-gradient(to right,#ffcc44,#ffdd66); width:0%; transition:width 0.15s; }
+  /* temp bar - color-coded hot/cold */
+  .temp-bar-wrap { height:3px; background:#ffffff18; }
+  .temp-bar { height:3px; width:50%; transition:width 0.2s,background 0.3s; }
+  .pm-divider { height:1px; background:linear-gradient(to right,transparent,#00ffe744,transparent); margin:3px 0 1px; }
+  .sm-divider { height:1px; background:linear-gradient(to right,transparent,#ffcc4444,transparent); margin:3px 0 1px; }
+  .pm-btn-row,.sm-btn-row { display:flex; gap:6px; }
+  .pm-btn,.sm-btn {
+    flex:1; padding:5px 4px; font-family:var(--crt-font); font-size:9px;
+    letter-spacing:3px; text-transform:uppercase; cursor:pointer;
+    border:1px solid currentColor; background:transparent;
+    transition:background 0.12s,box-shadow 0.12s,color 0.12s;
+    clip-path:polygon(0 4px,4px 0,calc(100% - 4px) 0,100% 4px,100% calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,0 calc(100% - 4px));
   }
-
-  .pm-label {
-    width:          54px;
-    flex-shrink:    0;
-    font-size:      9px;
-    letter-spacing: 3px;
-    color:          var(--crt-teal-dim);
-    text-transform: uppercase;
-  }
-
-  .pm-input {
-    flex:        1;
-    background:  #00ffe70a;
-    border:      1px solid #00ffe733;
-    color:       var(--crt-white);
-    font-family: var(--crt-font);
-    font-size:   12px;
-    padding:     3px 6px;
-    outline:     none;
-    transition:  border-color 0.15s, box-shadow 0.15s;
-
-    clip-path: polygon(
-      0 4px, 4px 0, calc(100% - 4px) 0, 100% 4px,
-      100% calc(100% - 4px), calc(100% - 4px) 100%,
-      4px 100%, 0 calc(100% - 4px)
-    );
-  }
-  .pm-input:focus {
-    border-color: var(--crt-teal);
-    box-shadow:   0 0 6px #00ffe766;
-    background:   #00ffe714;
-  }
-  .pm-input::-webkit-inner-spin-button,
-  .pm-input::-webkit-outer-spin-button { -webkit-appearance: none; }
-  .pm-input[type=number] { -moz-appearance: textfield; }
-
-  /* ── Divider ───────────────────────────────────────────────────────── */
-  .pm-divider {
-    height:     1px;
-    background: linear-gradient(to right, transparent, #00ffe744, transparent);
-    margin:     4px 0 2px;
-  }
-
-  /* ── Buttons ───────────────────────────────────────────────────────── */
-  .pm-btn-row {
-    display: flex;
-    gap:     6px;
-  }
-
-  .pm-btn {
-    flex:           1;
-    padding:        5px 4px;
-    font-family:    var(--crt-font);
-    font-size:      9px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    cursor:         pointer;
-    border:         1px solid currentColor;
-    background:     transparent;
-    transition:     background 0.12s, box-shadow 0.12s, color 0.12s;
-
-    clip-path: polygon(
-      0 4px, 4px 0, calc(100% - 4px) 0, 100% 4px,
-      100% calc(100% - 4px), calc(100% - 4px) 100%,
-      4px 100%, 0 calc(100% - 4px)
-    );
-  }
-
-  .pm-btn-primary { color: var(--crt-teal); }
-  .pm-btn-primary:hover {
-    background:  #00ffe718;
-    box-shadow:  0 0 8px #00ffe766;
-    color:       #fff;
-  }
-  .pm-btn-primary:active { background: #00ffe730; }
-
-  .pm-btn-secondary { color: var(--crt-teal-dim); }
-  .pm-btn-secondary:hover { background: #4ecdc418; color: #fff; }
-
-  .pm-btn-danger { color: var(--crt-danger); border-color: var(--crt-danger); }
-  .pm-btn-danger:hover {
-    background: #ff444418;
-    box-shadow: 0 0 8px #ff444466;
-    color:      #ffaaaa;
-  }
-
-  .pm-btn-full { width: 100%; flex: none; }
-
-  /* ── Footer ────────────────────────────────────────────────────────── */
-  #planet-menu-footer {
-    padding:        4px 10px 6px;
-    border-top:     1px solid #00ffe722;
-    font-size:      8px;
-    letter-spacing: 3px;
-    color:          #00ffe755;
-    text-align:     center;
-  }
+  .pm-btn-primary{color:var(--crt-teal)} .pm-btn-primary:hover{background:#00ffe718;box-shadow:0 0 8px #00ffe766;color:#fff}
+  .pm-btn-secondary{color:var(--crt-teal-dim)} .pm-btn-secondary:hover{background:#4ecdc418;color:#fff}
+  .pm-btn-danger{color:var(--crt-danger);border-color:var(--crt-danger)} .pm-btn-danger:hover{background:#ff444418;box-shadow:0 0 8px #ff444466;color:#ffaaaa}
+  .pm-btn-full{width:100%;flex:none}
+  .sm-btn-star{color:#ffcc44} .sm-btn-star:hover{background:#ffcc4418;box-shadow:0 0 8px #ffcc4466;color:#fff}
+  .sm-btn-system{color:#ffaa22} .sm-btn-system:hover{background:#ffaa2218;box-shadow:0 0 8px #ffaa2266;color:#fff}
+  .sm-btn-binary{color:#ff88ff;border-color:#ff88ff} .sm-btn-binary:hover{background:#ff88ff18;box-shadow:0 0 8px #ff88ff66;color:#fff}
+  .sm-btn-danger{color:var(--crt-danger);border-color:var(--crt-danger)} .sm-btn-danger:hover{background:#ff444418;box-shadow:0 0 8px #ff444466;color:#ffaaaa}
+  #planet-menu-footer { padding:4px 10px 6px; border-top:1px solid #00ffe722; font-size:8px; letter-spacing:3px; color:#00ffe755; text-align:center; }
+  #star-menu-footer   { padding:4px 10px 6px; border-top:1px solid #ffcc4422; font-size:8px; letter-spacing:3px; color:#ffcc4455; text-align:center; }
 </style>
 </head>
 <body>
 
-<!-- ── Planet editor menu (DOM overlay) ─────────────────────────────── -->
+<!-- Planet editor menu -->
 <div id="planet-menu">
-  <div id="planet-menu-header">
-    <span id="planet-menu-title">BODY EDIT</span>
-  </div>
+  <div id="planet-menu-header"><span id="planet-menu-title">BODY EDIT</span></div>
   <div id="planet-menu-body">
     <div class="pm-row">
+      <span class="pm-label">Radius</span>
+      <input id="planet-radius" class="pm-input" type="number" step="1" value="0">
+    </div>
+    <div class="pm-row">
       <span class="pm-label">Vx</span>
-      <input id="planet-vx"   class="pm-input" type="number" step="0.1" value="0.00">
+      <input id="planet-vx" class="pm-input live-display" type="number" step="0.1" value="0">
     </div>
     <div class="pm-row">
       <span class="pm-label">Vy</span>
-      <input id="planet-vy"   class="pm-input" type="number" step="0.1" value="0.00">
+      <input id="planet-vy" class="pm-input live-display" type="number" step="0.1" value="0">
     </div>
     <div class="pm-row">
       <span class="pm-label">Mass</span>
-      <input id="planet-mass" class="pm-input" type="number" step="1"   value="0.00">
+      <input id="planet-mass" class="pm-input" type="number" step="1" value="0">
     </div>
     <div class="pm-divider"></div>
+    <div class="pm-info-row">
+      <span class="pm-info-label">⊕ Grav</span>
+      <span class="pm-info-val" id="planet-grav-val">0.00 g</span>
+    </div>
+    <div class="pm-bar-wrap"><div class="pm-bar" id="planet-grav-bar"></div></div>
+    <div class="pm-info-row" style="margin-top:2px">
+      <span class="pm-info-label">🌡 Temp</span>
+      <input id="planet-temp" class="pm-temp-input" type="number" step="10" value="0">
+      <span class="pm-info-val" id="planet-temp-unit" style="width:20px;text-align:left;flex:none;font-size:9px;color:#7ef7ff99">K</span>
+    </div>
+    <div class="temp-bar-wrap"><div class="temp-bar" id="planet-temp-bar" style="background:#4488ff"></div></div>
+    <div class="pm-divider"></div>
     <div class="pm-btn-row">
-      <button id="planet-apply"    class="pm-btn pm-btn-primary">▶ Apply</button>
+      <button id="planet-apply" class="pm-btn pm-btn-primary">▶ Apply</button>
       <button id="planet-add-moon" class="pm-btn pm-btn-secondary">◎ Moon</button>
     </div>
     <div class="pm-divider"></div>
     <div class="pm-btn-row">
-      <button id="planet-delete"     class="pm-btn pm-btn-danger">✕ Delete</button>
-      <button id="planet-delete-all" class="pm-btn pm-btn-danger"
-              style="color:#ff8844;border-color:#ff8844">⊘ All</button>
+      <button id="planet-delete" class="pm-btn pm-btn-danger">✕ Delete</button>
+      <button id="planet-delete-all" class="pm-btn pm-btn-danger" style="color:#ff8844;border-color:#ff8844">⊘ All</button>
     </div>
   </div>
-  <div id="planet-menu-footer">SYSTEM·SIM // v0.1.0</div>
+  <div id="planet-menu-footer">SYSTEM·SIM // v0.4.0</div>
+</div>
+
+<!-- Star editor menu -->
+<div id="star-menu">
+  <div id="star-menu-header"><span id="star-menu-title">STAR EDIT</span></div>
+  <div id="star-menu-body">
+    <div class="pm-row">
+      <span class="sm-label">Radius</span>
+      <input id="star-radius" class="sm-input" type="number" step="1" value="0">
+    </div>
+    <div class="pm-row">
+      <span class="sm-label">Vx</span>
+      <input id="star-vx" class="sm-input live-display" type="number" step="0.1" value="0">
+    </div>
+    <div class="pm-row">
+      <span class="sm-label">Vy</span>
+      <input id="star-vy" class="sm-input live-display" type="number" step="0.1" value="0">
+    </div>
+    <div class="pm-row">
+      <span class="sm-label">Mass</span>
+      <input id="star-mass" class="sm-input" type="number" step="100" value="0">
+    </div>
+    <div class="sm-divider"></div>
+    <div class="sm-info-row">
+      <span class="sm-info-label">★ Grav</span>
+      <span class="sm-info-val" id="star-grav-val">0.00 g</span>
+    </div>
+    <div class="sm-bar-wrap"><div class="sm-bar" id="star-grav-bar"></div></div>
+    <div class="sm-info-row" style="margin-top:2px">
+      <span class="sm-info-label">🌡 Temp</span>
+      <input id="star-temp" class="sm-temp-input" type="number" step="100" value="0">
+      <span class="sm-info-val" id="star-temp-unit" style="width:20px;text-align:left;flex:none;font-size:9px;color:#ffdd6699">K</span>
+    </div>
+    <div class="temp-bar-wrap"><div class="temp-bar" id="star-temp-bar" style="background:#ff8800"></div></div>
+    <div class="sm-divider"></div>
+    <div class="sm-btn-row">
+      <button id="star-apply" class="sm-btn sm-btn-star">▶ Apply</button>
+    </div>
+    <div class="sm-divider"></div>
+    <div class="sm-btn-row">
+      <button id="star-add-planet" class="sm-btn sm-btn-star pm-btn-full">⊕ Add Planet</button>
+    </div>
+    <div class="sm-btn-row">
+      <button id="star-add-system" class="sm-btn sm-btn-system pm-btn-full">◎ Solar System</button>
+    </div>
+    <div class="sm-btn-row">
+      <button id="star-add-binary" class="sm-btn sm-btn-binary pm-btn-full">✦ Binary Partner</button>
+    </div>
+    <div class="sm-divider"></div>
+    <div class="sm-btn-row">
+      <button id="star-delete" class="sm-btn sm-btn-danger">✕ Delete</button>
+      <button id="star-delete-all" class="sm-btn sm-btn-danger" style="color:#ff8844;border-color:#ff8844">⊘ All</button>
+    </div>
+  </div>
+  <div id="star-menu-footer">STELLAR·OBJ // CLASS G</div>
 </div>
 
 <script>
@@ -248,26 +216,9 @@
 //  GAME SETTINGS
 // =============================================================================
 const GameSettings = {
-    screenShake:   true,
-    explosions:    true,
-    showPerfPanel: true,
-    save() {
-        try { localStorage.setItem('game-settings', JSON.stringify({
-            screenShake:   this.screenShake,
-            explosions:    this.explosions,
-            showPerfPanel: this.showPerfPanel,
-        })); } catch(e) {}
-    },
-    load() {
-        try {
-            const raw = localStorage.getItem('game-settings');
-            if (!raw) return;
-            const d = JSON.parse(raw);
-            if (typeof d.screenShake   === 'boolean') this.screenShake   = d.screenShake;
-            if (typeof d.explosions    === 'boolean') this.explosions    = d.explosions;
-            if (typeof d.showPerfPanel === 'boolean') this.showPerfPanel = d.showPerfPanel;
-        } catch(e) {}
-    },
+    screenShake:true, explosions:true, showPerfPanel:true,
+    save() { try{localStorage.setItem('game-settings',JSON.stringify({screenShake:this.screenShake,explosions:this.explosions,showPerfPanel:this.showPerfPanel}));}catch(e){} },
+    load() { try{const d=JSON.parse(localStorage.getItem('game-settings')||'{}');if(typeof d.screenShake==='boolean')this.screenShake=d.screenShake;if(typeof d.explosions==='boolean')this.explosions=d.explosions;if(typeof d.showPerfPanel==='boolean')this.showPerfPanel=d.showPerfPanel;}catch(e){} },
 };
 GameSettings.load();
 
@@ -275,26 +226,68 @@ GameSettings.load();
 //  CONSTANTS
 // =============================================================================
 const PHY = {
-    G:              600,
-    SOFT:           20,
-    MAX_GRAV_D:     3000,
-    GRAV_CELL:      1600,
-    GRID_CELL:      260,
-    MERGE_FRAC:     0.30,
-    BOUNCE_E:       0.35,
-    // PERF: reduced from 45000 — debris fades out much faster, cutting ongoing sim cost
-    DEBRIS_LIFE_MS: 12000,
-    DEBRIS_MASS_MIN:1.5,
-    // PERF: reduced from 350 — hard cap keeps O(n²) collision cost bounded
-    MAX_BODIES:     220,
-    // PERF: reduced from 55 — large collisions spawn fewer fragments
-    MAX_FRAGS:      28,
-    MIN_SEP_SPEED:  0.5,
-    ROCHE_GRIND_FRAMES: 8,
-    ROCHE_FAST_THRESH:  15,
-    GRAV_REF_MASS:  50,
-    GRAV_RANGE_MAX: 4,
+    G:600, SOFT:20,
+    // For opening screen only (spatial hash gravity)
+    MAX_GRAV_D:10000, GRAV_CELL:1600, GRAV_REF_MASS:50, GRAV_RANGE_MAX:4,
+    GRID_CELL:260,
+    MERGE_FRAC:0.30, BOUNCE_E:0.35,
+    DEBRIS_LIFE_MS:14000, DEBRIS_MASS_MIN:1.5,
+    MAX_BODIES:200,      // non-debris cap
+    MAX_DEBRIS:120,      // debris cap (separate)
+    MAX_FRAGS:20,
+    MIN_SEP_SPEED:0.5,
+    ROCHE_GRIND_FRAMES:8, ROCHE_FAST_THRESH:15,
+    // Debris promotion
+    DEBRIS_PROMOTE_RADIUS:9, DEBRIS_PROMOTE_MASS:14,
+    // Stars
+    STAR_MIN_RADIUS:80, STAR_MAX_RADIUS:500,
+    // Heating radii fraction (visual glow extends to ~2.75× star radius)
+    STAR_HEAT_RADIUS_FRAC:2.4,
+    // Temperature thresholds (Kelvin, abstract)
+    TEMP_ICE_TO_TERRAN:  273,    // ice melts → terran
+    TEMP_TERRAN_TO_LAVA: 800,    // terran heats → lava
+    // Star baseline temperature
+    STAR_BASE_TEMP: 5500,
+    // Planet baseline temperature (space background)
+    PLANET_SPACE_TEMP: 10,
+    // Heat decay rate per second (how fast temp approaches target)
+    TEMP_CHANGE_RATE: 120,
+    // Gravity display ref
+    GRAV_DISPLAY_REF:10000,
 };
+
+// =============================================================================
+//  HELPERS
+// =============================================================================
+function surfaceGravity(body) {
+    // G * M / r² — but gravity strength = G * M (range is infinite, force = G*M/r²)
+    // Display "gravitational strength" as G*M (proportional to mass)
+    return PHY.G * body.mass;
+}
+function formatGravity(g) {
+    if (g>=1e9)  return (g/1e9).toFixed(2)+' Gg';
+    if (g>=1e6)  return (g/1e6).toFixed(2)+' Mg';
+    if (g>=1000) return (g/1000).toFixed(2)+' kg';
+    return g.toFixed(0)+' g';
+}
+function gravBarFraction(g) {
+    if (g<=0) return 0;
+    const lo=Math.log10(1), hi=Math.log10(PHY.G*1e7);
+    return Math.max(0,Math.min(1,(Math.log10(g)-lo)/(hi-lo)));
+}
+function tempColor(t) {
+    // Returns CSS color string for temperature bar
+    if (t < PHY.TEMP_ICE_TO_TERRAN) return `hsl(${200+Math.max(0,40*(1-t/PHY.TEMP_ICE_TO_TERRAN))},80%,60%)`;
+    if (t < PHY.TEMP_TERRAN_TO_LAVA) {
+        const f=(t-PHY.TEMP_ICE_TO_TERRAN)/(PHY.TEMP_TERRAN_TO_LAVA-PHY.TEMP_ICE_TO_TERRAN);
+        return `hsl(${120-f*80},70%,50%)`;
+    }
+    const f=Math.min(1,(t-PHY.TEMP_TERRAN_TO_LAVA)/2000);
+    return `hsl(${40-f*40},100%,${60-f*20}%)`;
+}
+function tempBarFraction(t) {
+    return Math.max(0,Math.min(1,t/(PHY.STAR_BASE_TEMP*1.2)));
+}
 
 // =============================================================================
 //  DEBRIS POOL
@@ -304,28 +297,157 @@ class DebrisPool {
         this.scene = scene;
         this.slots = [];
         for (let i = 0; i < capacity; i++) {
-            const spr = scene.add.circle(0, 0, 2, 0xffffff, 0);
+            const spr = scene.add.circle(0,0,2,0xffffff,0);
             spr.setDepth(0).setVisible(false);
-            this.slots.push({ spr, active: false });
+            this.slots.push({spr,active:false});
         }
     }
-    acquire(x, y, r, color) {
-        const slot = this.slots.find(s => !s.active);
+    acquire(x,y,r,color) {
+        const slot=this.slots.find(s=>!s.active);
         if (!slot) return null;
-        slot.active = true;
-        slot.spr.setPosition(x, y).setRadius(r)
-                .setFillStyle(color, 1).setVisible(true).setAlpha(1);
+        slot.active=true;
+        slot.spr.setPosition(x,y).setRadius(r).setFillStyle(color,1).setVisible(true).setAlpha(1);
         return slot;
     }
-    release(slot) {
-        if (!slot) return;
-        slot.active = false;
-        slot.spr.setVisible(false);
+    release(slot) { if(!slot)return; slot.active=false; slot.spr.setVisible(false); }
+    releaseAll()  { for(const s of this.slots){s.active=false;s.spr.setVisible(false);} }
+}
+
+// =============================================================================
+//  STAR TEXTURE GENERATOR
+// =============================================================================
+class StarTextureGen {
+    static _rng(seed) {
+        let s = seed | 0;
+        return () => {
+            s = (Math.imul(1664525, s) + 1013904223) | 0;
+            return (s >>> 0) / 4294967296;
+        };
     }
-    releaseAll() {
-        for (const s of this.slots) { s.active = false; s.spr.setVisible(false); }
+    static _rgba(hex, a = 1) {
+        const r = (hex >> 16) & 0xff, g = (hex >> 8) & 0xff, b = hex & 0xff;
+        return `rgba(${r},${g},${b},${a})`;
+    }
+
+    static generate(scene, radius, seed) {
+        const r = Math.max(20, Math.round(radius));
+        const key = `stex-${seed}-r${r}`;
+        if (scene.textures.exists(key)) return key;
+        const rng  = StarTextureGen._rng(seed);
+        const size = r * 2;
+
+        // Pick star type based on seed
+        const typeRoll = rng();
+        let type;
+        if (typeRoll < 0.5)      type = 'yellow';   // G-type
+        else if (typeRoll < 0.75) type = 'orange';  // K-type
+        else if (typeRoll < 0.88) type = 'blue';    // B-type
+        else if (typeRoll < 0.95) type = 'red';     // M-type red giant
+        else                      type = 'white';   // White dwarf / hot star
+
+        const canvas = document.createElement('canvas');
+        canvas.width = canvas.height = size;
+        const ctx = canvas.getContext('2d');
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(r, r, r, 0, Math.PI * 2);
+        ctx.clip();
+
+        StarTextureGen._drawStar(ctx, r, rng, type);
+        ctx.restore();
+
+        scene.textures.addCanvas(key, canvas);
+        return key;
+    }
+
+    static _drawStar(ctx, r, rng, type) {
+        const size = r * 2;
+        const palettes = {
+            yellow: { core: 0xfffbe0, mid: 0xffd866, outer: 0xff8800, corona: 0xff6600 },
+            orange: { core: 0xfff0d0, mid: 0xffaa44, outer: 0xff6600, corona: 0xff3300 },
+            blue:   { core: 0xffffff, mid: 0xccddff, outer: 0x6699ff, corona: 0x4466ff },
+            red:    { core: 0xffd0b0, mid: 0xff8844, outer: 0xcc3300, corona: 0x991100 },
+            white:  { core: 0xffffff, mid: 0xeeeeff, outer: 0xaabbff, corona: 0x8899ff },
+        };
+        const pal = palettes[type];
+
+        // Deep base
+        const base = ctx.createRadialGradient(r, r, 0, r, r, r);
+        base.addColorStop(0,   StarTextureGen._rgba(pal.core, 1));
+        base.addColorStop(0.3, StarTextureGen._rgba(pal.mid,  1));
+        base.addColorStop(0.7, StarTextureGen._rgba(pal.outer,1));
+        base.addColorStop(1,   StarTextureGen._rgba(pal.corona, 0.9));
+        ctx.fillStyle = base;
+        ctx.fillRect(0, 0, size, size);
+
+        // Granulation / convection cells
+        const numCells = 30 + Math.floor(rng() * 40);
+        for (let i = 0; i < numCells; i++) {
+            const cx = rng() * size;
+            const cy = rng() * size;
+            const cr = r * (0.04 + rng() * 0.12);
+            const brightness = 0.85 + rng() * 0.30;
+            const cellGrd = ctx.createRadialGradient(cx, cy, 0, cx, cy, cr);
+            cellGrd.addColorStop(0,   StarTextureGen._rgba(pal.core, brightness * 0.4));
+            cellGrd.addColorStop(0.5, StarTextureGen._rgba(pal.mid,  brightness * 0.15));
+            cellGrd.addColorStop(1,   StarTextureGen._rgba(pal.corona, 0));
+            ctx.beginPath();
+            ctx.arc(cx, cy, cr, 0, Math.PI * 2);
+            ctx.fillStyle = cellGrd;
+            ctx.fill();
+        }
+
+        // Sunspot regions
+        const numSpots = Math.floor(rng() * 6);
+        for (let i = 0; i < numSpots; i++) {
+            const angle = rng() * Math.PI * 2;
+            const dist  = rng() * r * 0.6;
+            const sx = r + Math.cos(angle) * dist;
+            const sy = r + Math.sin(angle) * dist;
+            const sr = r * (0.03 + rng() * 0.07);
+            const spotGrd = ctx.createRadialGradient(sx, sy, 0, sx, sy, sr);
+            spotGrd.addColorStop(0, 'rgba(0,0,0,0.55)');
+            spotGrd.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.beginPath();
+            ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+            ctx.fillStyle = spotGrd;
+            ctx.fill();
+        }
+
+        // Limb darkening
+        const limb = ctx.createRadialGradient(r, r, r * 0.5, r, r, r);
+        limb.addColorStop(0, 'rgba(0,0,0,0)');
+        limb.addColorStop(0.7, 'rgba(0,0,0,0.08)');
+        limb.addColorStop(1,   'rgba(0,0,0,0.55)');
+        ctx.fillStyle = limb;
+        ctx.fillRect(0, 0, size, size);
+
+        // Specular hot spot
+        const spec = ctx.createRadialGradient(r * 0.62, r * 0.42, 0, r * 0.62, r * 0.42, r * 0.45);
+        spec.addColorStop(0,   'rgba(255,255,255,0.28)');
+        spec.addColorStop(0.5, 'rgba(255,255,255,0.06)');
+        spec.addColorStop(1,   'rgba(255,255,255,0)');
+        ctx.fillStyle = spec;
+        ctx.fillRect(0, 0, size, size);
+    }
+
+    static regenerate(scene, oldKey, radius, seed) {
+        if (oldKey && scene.textures.exists(oldKey)) scene.textures.remove(oldKey);
+        return StarTextureGen.generate(scene, radius, seed);
+    }
+
+    static getGlowColor(seed) {
+        const rng = StarTextureGen._rng(seed);
+        const typeRoll = rng();
+        if (typeRoll < 0.5)       return 0xffaa00;
+        else if (typeRoll < 0.75) return 0xff6600;
+        else if (typeRoll < 0.88) return 0x4488ff;
+        else if (typeRoll < 0.95) return 0xff2200;
+        else                      return 0xaabbff;
     }
 }
+
 
 // =============================================================================
 //  PLANET TEXTURE GENERATOR
@@ -338,31 +460,34 @@ class PlanetTextureGen {
             return (s >>> 0) / 4294967296;
         };
     }
-    static _blend(a, b, t) {
-        const ra=(a>>16)&0xff, ga=(a>>8)&0xff, ba=a&0xff;
-        const rb=(b>>16)&0xff, gb=(b>>8)&0xff, bb=b&0xff;
-        return (Math.round(ra+(rb-ra)*t)<<16)|(Math.round(ga+(gb-ga)*t)<<8)|Math.round(ba+(bb-ba)*t);
+    static _rgba(hex, a=1) {
+        const r=(hex>>16)&0xff, g=(hex>>8)&0xff, b=hex&0xff;
+        return `rgba(${r},${g},${b},${a})`;
     }
     static _tint(c, f) {
         return (Math.min(255,Math.round(((c>>16)&0xff)*f))<<16)|
                (Math.min(255,Math.round(((c>>8 )&0xff)*f))<<8)|
                 Math.min(255,Math.round((c&0xff)*f));
     }
-    static _rgba(hex, a=1) {
-        const r=(hex>>16)&0xff, g=(hex>>8)&0xff, b=hex&0xff;
-        return `rgba(${r},${g},${b},${a})`;
-    }
 
-    static generate(scene, radius, seed) {
+    static generate(scene, radius, seed, forceType) {
         const r = Math.max(6, Math.round(radius));
-        const key = `ptex-${seed}-r${r}`;
+        // forceType allows overriding (e.g. 'lava' when heated)
+        const typeKey = forceType ? `-${forceType}` : '';
+        const key = `ptex-${seed}-r${r}${typeKey}`;
         if (scene.textures.exists(key)) return key;
         const rng  = PlanetTextureGen._rng(seed);
         const size = r * 2;
         let type;
-        if (r >= 80)      type = 'gas';
-        else if (r >= 22) type = ['terran','lava','ice','terran'][Math.floor(rng()*4)];
-        else              type = 'rocky';
+        if (forceType) {
+            type = forceType;
+        } else if (r >= 80) {
+            type = 'gas';
+        } else if (r >= 22) {
+            type = ['terran','lava','ice','terran'][Math.floor(rng()*4)];
+        } else {
+            type = 'rocky';
+        }
         const canvas = document.createElement('canvas');
         canvas.width = canvas.height = size;
         const ctx = canvas.getContext('2d');
@@ -383,14 +508,23 @@ class PlanetTextureGen {
         return key;
     }
 
+    // Detect the type of a generated texture from its seed/radius
+    static detectType(radius, seed) {
+        const r = Math.max(6, Math.round(radius));
+        if (r >= 80) return 'gas';
+        const rng = PlanetTextureGen._rng(seed);
+        if (r >= 22) return ['terran','lava','ice','terran'][Math.floor(rng()*4)];
+        return 'rocky';
+    }
+
     static _drawGas(ctx, r, rng) {
         const size = r * 2;
         const palettes = [
-            [0xc8966e, 0xe8b87c, 0xd4a068, 0xf0d0a0, 0xa07040],
-            [0x8899cc, 0x6677aa, 0xaabbdd, 0xccddee, 0x445588],
-            [0xddaa88, 0xcc8866, 0xeecc99, 0xffddaa, 0xbb7755],
-            [0x99ccaa, 0x77aa88, 0xbbddcc, 0xaaccbb, 0x558866],
-            [0xcc6644, 0xaa4422, 0xee8855, 0xff9966, 0x883322],
+            [0xc8966e,0xe8b87c,0xd4a068,0xf0d0a0,0xa07040],
+            [0x8899cc,0x6677aa,0xaabbdd,0xccddee,0x445588],
+            [0xddaa88,0xcc8866,0xeecc99,0xffddaa,0xbb7755],
+            [0x99ccaa,0x77aa88,0xbbddcc,0xaaccbb,0x558866],
+            [0xcc6644,0xaa4422,0xee8855,0xff9966,0x883322],
         ];
         const pal = palettes[Math.floor(rng() * palettes.length)];
         ctx.fillStyle = PlanetTextureGen._rgba(pal[0]);
@@ -415,263 +549,137 @@ class PlanetTextureGen {
         }
         const storms = 1 + Math.floor(rng() * 3);
         for (let i = 0; i < storms; i++) {
-            const sx  = r * 0.3 + rng() * r * 1.4;
-            const sy  = r * 0.2 + rng() * r * 1.6;
-            const sw  = r * (0.12 + rng() * 0.28);
-            const sh  = sw * (0.35 + rng() * 0.3);
+            const sx = r*0.3+rng()*r*1.4, sy = r*0.2+rng()*r*1.6;
+            const sw = r*(0.12+rng()*0.28), sh = sw*(0.35+rng()*0.3);
             const col = pal[Math.floor(rng() * pal.length)];
-            ctx.save();
-            ctx.translate(sx, sy);
-            ctx.rotate(rng() * 0.4 - 0.2);
-            ctx.beginPath();
-            ctx.ellipse(0, 0, sw, sh, 0, 0, Math.PI*2);
-            ctx.fillStyle = PlanetTextureGen._rgba(col, 0.7);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.ellipse(0, 0, sw*0.55, sh*0.55, 0, 0, Math.PI*2);
-            ctx.fillStyle = PlanetTextureGen._rgba(PlanetTextureGen._tint(col, 1.4), 0.5);
-            ctx.fill();
+            ctx.save(); ctx.translate(sx, sy); ctx.rotate(rng()*0.4-0.2);
+            ctx.beginPath(); ctx.ellipse(0,0,sw,sh,0,0,Math.PI*2);
+            ctx.fillStyle = PlanetTextureGen._rgba(col, 0.7); ctx.fill();
+            ctx.beginPath(); ctx.ellipse(0,0,sw*0.55,sh*0.55,0,0,Math.PI*2);
+            ctx.fillStyle = PlanetTextureGen._rgba(PlanetTextureGen._tint(col,1.4), 0.5); ctx.fill();
             ctx.restore();
-        }
-        for (let i = 0; i < 18; i++) {
-            const y    = rng() * size;
-            const len  = size * (0.1 + rng() * 0.5);
-            const sx   = rng() * size;
-            const col  = pal[Math.floor(rng() * pal.length)];
-            ctx.beginPath();
-            ctx.moveTo(sx, y);
-            ctx.bezierCurveTo(
-                sx + len*0.3, y + (rng()-0.5)*8,
-                sx + len*0.7, y + (rng()-0.5)*8,
-                sx + len,     y + (rng()-0.5)*4
-            );
-            ctx.strokeStyle = PlanetTextureGen._rgba(col, 0.2 + rng()*0.25);
-            ctx.lineWidth = 1 + rng() * 2;
-            ctx.stroke();
         }
     }
 
     static _drawTerran(ctx, r, rng) {
         const size = r * 2;
-        const oceanPals = [
-            [0x1a5fa8, 0x1e7ac8],
-            [0x0d4d6b, 0x147088],
-            [0x2d3561, 0x3d4f8a],
-        ];
-        const op  = oceanPals[Math.floor(rng() * oceanPals.length)];
+        const oceanPals = [[0x1a5fa8,0x1e7ac8],[0x0d4d6b,0x147088],[0x2d3561,0x3d4f8a]];
+        const op = oceanPals[Math.floor(rng() * oceanPals.length)];
         const grd = ctx.createLinearGradient(0, 0, 0, size);
         grd.addColorStop(0, PlanetTextureGen._rgba(op[0]));
         grd.addColorStop(1, PlanetTextureGen._rgba(op[1]));
-        ctx.fillStyle = grd;
-        ctx.fillRect(0, 0, size, size);
+        ctx.fillStyle = grd; ctx.fillRect(0, 0, size, size);
         const landPals = [
-            [0x3a7d44, 0x5a9e5a, 0x8bc34a, 0xc8b860],
-            [0x7a5c3a, 0x9a7c5a, 0xb89070, 0xd4a870],
-            [0x4a7a55, 0x6aaa65, 0x9acd7a, 0xd0c87a],
+            [0x3a7d44,0x5a9e5a,0x8bc34a,0xc8b860],
+            [0x7a5c3a,0x9a7c5a,0xb89070,0xd4a870],
+            [0x4a7a55,0x6aaa65,0x9acd7a,0xd0c87a],
         ];
         const lp = landPals[Math.floor(rng() * landPals.length)];
         const numConts = 2 + Math.floor(rng() * 4);
         for (let i = 0; i < numConts; i++) {
-            const cx2  = rng() * size;
-            const cy2  = rng() * size;
-            const pts  = 7 + Math.floor(rng() * 6);
-            const base = r * (0.15 + rng() * 0.35);
+            const cx2=rng()*size, cy2=rng()*size, pts=7+Math.floor(rng()*6), base=r*(0.15+rng()*0.35);
             ctx.beginPath();
             for (let j = 0; j <= pts; j++) {
-                const angle = (j / pts) * Math.PI * 2;
-                const rad   = base * (0.6 + rng() * 0.8);
-                const px    = cx2 + Math.cos(angle) * rad;
-                const py    = cy2 + Math.sin(angle) * rad;
-                j === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+                const angle=(j/pts)*Math.PI*2, rad=base*(0.6+rng()*0.8);
+                const px=cx2+Math.cos(angle)*rad, py=cy2+Math.sin(angle)*rad;
+                j===0?ctx.moveTo(px,py):ctx.lineTo(px,py);
             }
             ctx.closePath();
-            ctx.fillStyle = PlanetTextureGen._rgba(lp[Math.floor(rng()*lp.length)], 0.9);
-            ctx.fill();
-            for (let k = 0; k < 4; k++) {
-                const mx = cx2 + (rng()-0.5) * base;
-                const my = cy2 + (rng()-0.5) * base;
-                ctx.beginPath();
-                ctx.arc(mx, my, base * (0.05 + rng() * 0.12), 0, Math.PI*2);
-                ctx.fillStyle = PlanetTextureGen._rgba(PlanetTextureGen._tint(lp[0], 0.75), 0.5);
-                ctx.fill();
-            }
+            ctx.fillStyle=PlanetTextureGen._rgba(lp[Math.floor(rng()*lp.length)],0.9); ctx.fill();
         }
         for (let i = 0; i < 12; i++) {
-            const cx2 = rng() * size;
-            const cy2 = rng() * size;
-            const cw  = r * (0.15 + rng() * 0.4);
-            const ch  = cw * (0.18 + rng() * 0.22);
-            ctx.beginPath();
-            ctx.ellipse(cx2, cy2, cw, ch, rng() * Math.PI, 0, Math.PI*2);
-            ctx.fillStyle = `rgba(255,255,255,${0.15 + rng()*0.3})`;
-            ctx.fill();
+            const cx2=rng()*size, cy2=rng()*size, cw=r*(0.15+rng()*0.4), ch=cw*(0.18+rng()*0.22);
+            ctx.beginPath(); ctx.ellipse(cx2,cy2,cw,ch,rng()*Math.PI,0,Math.PI*2);
+            ctx.fillStyle=`rgba(255,255,255,${0.15+rng()*0.3})`; ctx.fill();
         }
     }
 
     static _drawLava(ctx, r, rng) {
         const size = r * 2;
-        ctx.fillStyle = PlanetTextureGen._rgba(0x1a0a00);
-        ctx.fillRect(0, 0, size, size);
+        ctx.fillStyle = PlanetTextureGen._rgba(0x1a0a00); ctx.fillRect(0, 0, size, size);
         const lavaCols = [0xff4400, 0xff7700, 0xffaa00, 0xff2200];
-        const numCracks = 8 + Math.floor(rng() * 10);
-        for (let i = 0; i < numCracks; i++) {
-            let x = rng() * size, y = rng() * size;
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            const steps = 4 + Math.floor(rng() * 8);
-            for (let s = 0; s < steps; s++) {
-                x += (rng()-0.5) * r * 0.5;
-                y += (rng()-0.5) * r * 0.5;
-                ctx.lineTo(x, y);
+        for (let i = 0; i < 8 + Math.floor(rng()*10); i++) {
+            let x=rng()*size, y=rng()*size;
+            ctx.beginPath(); ctx.moveTo(x, y);
+            for (let s = 0; s < 4+Math.floor(rng()*8); s++) {
+                x+=(rng()-0.5)*r*0.5; y+=(rng()-0.5)*r*0.5; ctx.lineTo(x, y);
             }
-            const col = lavaCols[Math.floor(rng() * lavaCols.length)];
-            ctx.strokeStyle = PlanetTextureGen._rgba(col, 0.7 + rng()*0.3);
-            ctx.lineWidth   = 1 + rng() * 3;
-            ctx.stroke();
+            const col = lavaCols[Math.floor(rng()*lavaCols.length)];
+            ctx.strokeStyle=PlanetTextureGen._rgba(col, 0.7+rng()*0.3); ctx.lineWidth=1+rng()*3; ctx.stroke();
         }
-        const numPools = 3 + Math.floor(rng() * 5);
-        for (let i = 0; i < numPools; i++) {
-            const px  = rng() * size;
-            const py  = rng() * size;
-            const pr  = r * (0.04 + rng() * 0.15);
-            const col = lavaCols[Math.floor(rng() * lavaCols.length)];
-            const grd = ctx.createRadialGradient(px, py, 0, px, py, pr);
-            grd.addColorStop(0,   PlanetTextureGen._rgba(0xffffff, 0.9));
-            grd.addColorStop(0.3, PlanetTextureGen._rgba(col,      0.8));
-            grd.addColorStop(1,   PlanetTextureGen._rgba(col,      0));
-            ctx.beginPath();
-            ctx.arc(px, py, pr, 0, Math.PI*2);
-            ctx.fillStyle = grd;
-            ctx.fill();
-        }
-        for (let i = 0; i < 30; i++) {
-            const rx = rng() * size, ry = rng() * size;
-            const rr = r * (0.03 + rng() * 0.08);
-            ctx.beginPath();
-            ctx.arc(rx, ry, rr, 0, Math.PI*2);
-            const f = 0.3 + rng() * 0.4;
-            ctx.fillStyle = PlanetTextureGen._rgba(PlanetTextureGen._tint(0x2a1000, 1/f), 0.5);
-            ctx.fill();
+        for (let i = 0; i < 3+Math.floor(rng()*5); i++) {
+            const px=rng()*size, py=rng()*size, pr=r*(0.04+rng()*0.15);
+            const col=lavaCols[Math.floor(rng()*lavaCols.length)];
+            const grd=ctx.createRadialGradient(px,py,0,px,py,pr);
+            grd.addColorStop(0,PlanetTextureGen._rgba(0xffffff,0.9));
+            grd.addColorStop(0.3,PlanetTextureGen._rgba(col,0.8));
+            grd.addColorStop(1,PlanetTextureGen._rgba(col,0));
+            ctx.beginPath(); ctx.arc(px,py,pr,0,Math.PI*2); ctx.fillStyle=grd; ctx.fill();
         }
     }
 
     static _drawIce(ctx, r, rng) {
         const size = r * 2;
-        const grd = ctx.createRadialGradient(r*0.6, r*0.4, 0, r, r, r*1.2);
-        grd.addColorStop(0,   '#eef8ff');
-        grd.addColorStop(0.5, '#c8e8f8');
-        grd.addColorStop(1,   '#88b8d8');
-        ctx.fillStyle = grd;
-        ctx.fillRect(0, 0, size, size);
-        const crackCols = [0x88c8e8, 0x6699bb, 0xaaddf0, 0x4477aa];
+        const grd = ctx.createRadialGradient(r*0.6,r*0.4,0,r,r,r*1.2);
+        grd.addColorStop(0,'#eef8ff'); grd.addColorStop(0.5,'#c8e8f8'); grd.addColorStop(1,'#88b8d8');
+        ctx.fillStyle=grd; ctx.fillRect(0,0,size,size);
+        const crackCols=[0x88c8e8,0x6699bb,0xaaddf0,0x4477aa];
         for (let i = 0; i < 20; i++) {
-            let x = rng() * size, y = rng() * size;
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            const steps = 3 + Math.floor(rng() * 6);
-            for (let s = 0; s < steps; s++) {
-                x += (rng()-0.5) * r * 0.4;
-                y += (rng()-0.5) * r * 0.4;
-                ctx.lineTo(x, y);
-            }
-            const col = crackCols[Math.floor(rng() * crackCols.length)];
-            ctx.strokeStyle = PlanetTextureGen._rgba(col, 0.4 + rng()*0.4);
-            ctx.lineWidth   = 0.5 + rng() * 1.5;
-            ctx.stroke();
+            let x=rng()*size, y=rng()*size;
+            ctx.beginPath(); ctx.moveTo(x,y);
+            for (let s=0;s<3+Math.floor(rng()*6);s++){x+=(rng()-0.5)*r*0.4;y+=(rng()-0.5)*r*0.4;ctx.lineTo(x,y);}
+            const col=crackCols[Math.floor(rng()*crackCols.length)];
+            ctx.strokeStyle=PlanetTextureGen._rgba(col,0.4+rng()*0.4);ctx.lineWidth=0.5+rng()*1.5;ctx.stroke();
         }
-        for (let i = 0; i < 5; i++) {
-            const px = rng() * size, py = rng() * size;
-            const pr = r * (0.1 + rng() * 0.25);
-            ctx.beginPath();
-            ctx.ellipse(px, py, pr, pr*(0.4+rng()*0.6), rng()*Math.PI, 0, Math.PI*2);
-            ctx.fillStyle = `rgba(100,170,220,${0.25 + rng()*0.25})`;
-            ctx.fill();
-        }
-        for (let i = 0; i < 25; i++) {
-            const sx = rng() * size, sy = rng() * size;
-            ctx.beginPath();
-            ctx.arc(sx, sy, r*(0.01+rng()*0.04), 0, Math.PI*2);
-            ctx.fillStyle = `rgba(255,255,255,${0.3+rng()*0.5})`;
-            ctx.fill();
+        for (let i=0;i<25;i++){
+            const sx=rng()*size,sy=rng()*size;
+            ctx.beginPath();ctx.arc(sx,sy,r*(0.01+rng()*0.04),0,Math.PI*2);
+            ctx.fillStyle=`rgba(255,255,255,${0.3+rng()*0.5})`;ctx.fill();
         }
     }
 
     static _drawRocky(ctx, r, rng) {
         const size = r * 2;
-        const hues = [0x888888, 0x8a8070, 0x707878, 0x806868, 0x787068];
-        const base = hues[Math.floor(rng() * hues.length)];
-        const grd = ctx.createRadialGradient(r*0.55, r*0.45, 0, r, r, r);
-        grd.addColorStop(0,   PlanetTextureGen._rgba(PlanetTextureGen._tint(base, 1.5)));
-        grd.addColorStop(0.5, PlanetTextureGen._rgba(base));
-        grd.addColorStop(1,   PlanetTextureGen._rgba(PlanetTextureGen._tint(base, 0.5)));
-        ctx.fillStyle = grd;
-        ctx.fillRect(0, 0, size, size);
-        for (let i = 0; i < 60; i++) {
-            const gx = rng() * size, gy = rng() * size;
-            const gr = r * (0.02 + rng() * 0.07);
-            const f  = 0.7 + rng() * 0.6;
-            ctx.beginPath();
-            ctx.arc(gx, gy, gr, 0, Math.PI*2);
-            ctx.fillStyle = PlanetTextureGen._rgba(PlanetTextureGen._tint(base, f), 0.35);
-            ctx.fill();
+        const hues=[0x888888,0x8a8070,0x707878,0x806868,0x787068];
+        const base=hues[Math.floor(rng()*hues.length)];
+        const grd=ctx.createRadialGradient(r*0.55,r*0.45,0,r,r,r);
+        grd.addColorStop(0,PlanetTextureGen._rgba(PlanetTextureGen._tint(base,1.5)));
+        grd.addColorStop(0.5,PlanetTextureGen._rgba(base));
+        grd.addColorStop(1,PlanetTextureGen._rgba(PlanetTextureGen._tint(base,0.5)));
+        ctx.fillStyle=grd; ctx.fillRect(0,0,size,size);
+        for (let i=0;i<60;i++){
+            const gx=rng()*size,gy=rng()*size,gr=r*(0.02+rng()*0.07),f=0.7+rng()*0.6;
+            ctx.beginPath();ctx.arc(gx,gy,gr,0,Math.PI*2);
+            ctx.fillStyle=PlanetTextureGen._rgba(PlanetTextureGen._tint(base,f),0.35);ctx.fill();
         }
-        const numCraters = 4 + Math.floor(rng() * (r < 14 ? 5 : 9));
-        for (let i = 0; i < numCraters; i++) {
-            const cx2 = r * 0.15 + rng() * r * 1.7;
-            const cy2 = r * 0.15 + rng() * r * 1.7;
-            const cr  = r * (0.05 + rng() * 0.22);
-            ctx.beginPath();
-            ctx.arc(cx2, cy2, cr * 1.6, 0, Math.PI*2);
-            ctx.fillStyle = PlanetTextureGen._rgba(PlanetTextureGen._tint(base, 1.15), 0.25);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(cx2, cy2, cr, 0, Math.PI*2);
-            ctx.strokeStyle = PlanetTextureGen._rgba(PlanetTextureGen._tint(base, 1.6), 0.7);
-            ctx.lineWidth = Math.max(0.5, cr * 0.18);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.arc(cx2, cy2, cr * 0.78, 0, Math.PI*2);
-            ctx.fillStyle = PlanetTextureGen._rgba(PlanetTextureGen._tint(base, 0.45), 0.8);
-            ctx.fill();
-            if (cr > r * 0.1) {
-                ctx.beginPath();
-                ctx.arc(cx2, cy2, cr * 0.12, 0, Math.PI*2);
-                ctx.fillStyle = PlanetTextureGen._rgba(PlanetTextureGen._tint(base, 1.3), 0.7);
-                ctx.fill();
-            }
-        }
-        for (let i = 0; i < 12; i++) {
-            const cx2 = rng() * size, cy2 = rng() * size;
-            const cr  = r * (0.015 + rng() * 0.04);
-            ctx.beginPath();
-            ctx.arc(cx2, cy2, cr, 0, Math.PI*2);
-            ctx.fillStyle = PlanetTextureGen._rgba(PlanetTextureGen._tint(base, 0.5), 0.5);
-            ctx.fill();
+        const numCraters=4+Math.floor(rng()*(r<14?5:9));
+        for (let i=0;i<numCraters;i++){
+            const cx2=r*0.15+rng()*r*1.7,cy2=r*0.15+rng()*r*1.7,cr=r*(0.05+rng()*0.22);
+            ctx.beginPath();ctx.arc(cx2,cy2,cr*1.6,0,Math.PI*2);
+            ctx.fillStyle=PlanetTextureGen._rgba(PlanetTextureGen._tint(base,1.15),0.25);ctx.fill();
+            ctx.beginPath();ctx.arc(cx2,cy2,cr,0,Math.PI*2);
+            ctx.strokeStyle=PlanetTextureGen._rgba(PlanetTextureGen._tint(base,1.6),0.7);
+            ctx.lineWidth=Math.max(0.5,cr*0.18);ctx.stroke();
+            ctx.beginPath();ctx.arc(cx2,cy2,cr*0.78,0,Math.PI*2);
+            ctx.fillStyle=PlanetTextureGen._rgba(PlanetTextureGen._tint(base,0.45),0.8);ctx.fill();
         }
     }
 
     static _drawAtmosphere(ctx, r, type, rng) {
-        const atmColors = {
-            gas:    [0xffffff, 0.12],
-            terran: [0x88ccff, 0.22],
-            lava:   [0xff6600, 0.18],
-            ice:    [0xaaddff, 0.20],
-            rocky:  [0x000000, 0.0],
-        };
-        const [col, maxA] = atmColors[type] || [0xffffff, 0.1];
-        if (maxA <= 0) return;
-        const size = r * 2;
-        const grd  = ctx.createRadialGradient(r, r, r * 0.72, r, r, r);
-        grd.addColorStop(0,   PlanetTextureGen._rgba(col, 0));
-        grd.addColorStop(0.6, PlanetTextureGen._rgba(col, maxA * 0.3));
-        grd.addColorStop(1,   PlanetTextureGen._rgba(col, maxA));
-        ctx.fillStyle = grd;
-        ctx.fillRect(0, 0, size, size);
+        const atmColors={gas:[0xffffff,0.12],terran:[0x88ccff,0.22],lava:[0xff6600,0.18],ice:[0xaaddff,0.20],rocky:[0x000000,0.0]};
+        const [col,maxA]=atmColors[type]||[0xffffff,0.1];
+        if (maxA<=0) return;
+        const size=r*2;
+        const grd=ctx.createRadialGradient(r,r,r*0.72,r,r,r);
+        grd.addColorStop(0,PlanetTextureGen._rgba(col,0));
+        grd.addColorStop(0.6,PlanetTextureGen._rgba(col,maxA*0.3));
+        grd.addColorStop(1,PlanetTextureGen._rgba(col,maxA));
+        ctx.fillStyle=grd; ctx.fillRect(0,0,size,size);
     }
 
-    static regenerate(scene, oldKey, radius, seed) {
+    static regenerate(scene, oldKey, radius, seed, forceType) {
         if (oldKey && scene.textures.exists(oldKey)) scene.textures.remove(oldKey);
-        return PlanetTextureGen.generate(scene, radius, seed);
+        return PlanetTextureGen.generate(scene, radius, seed, forceType);
     }
 
     static shouldHaveRings(radius, seed) {
@@ -680,46 +688,31 @@ class PlanetTextureGen {
     }
 
     static generateRing(scene, radius, seed) {
-        const rng     = PlanetTextureGen._rng(seed ^ 0xc0ffee);
-        const key     = `pring-${seed}-r${Math.round(radius)}`;
+        const rng=PlanetTextureGen._rng(seed^0xc0ffee);
+        const key=`pring-${seed}-r${Math.round(radius)}`;
         if (scene.textures.exists(key)) return key;
-        const innerR  = radius * (1.28 + rng() * 0.18);
-        const outerR  = radius * (2.1  + rng() * 0.9);
-        const tiltY   = 0.22 + rng() * 0.22;
-        const numBands = 3 + Math.floor(rng() * 4);
-        const canvasW = Math.ceil(outerR * 2 + 4);
-        const canvasH = Math.ceil(outerR * tiltY * 2 + 4);
-        const cx      = canvasW / 2;
-        const cy      = canvasH / 2;
-        const canvas  = document.createElement('canvas');
-        canvas.width  = canvasW;
-        canvas.height = canvasH;
-        const ctx     = canvas.getContext('2d');
-        const ringPalettes = [
-            [0xd4b896, 0xc8a878, 0xe8d4b0, 0xb09070, 0x988060],
-            [0x88aacc, 0x6688aa, 0xaaccee, 0x7799bb, 0x557799],
-            [0xccccaa, 0xbbbb88, 0xddddcc, 0xaaaaaa, 0x999977],
-            [0xcc9966, 0xbb8844, 0xddbb88, 0xaa7744, 0x996633],
-            [0x99bbaa, 0x77998a, 0xbbddcc, 0x88aaa0, 0x669988],
-        ];
-        const pal = ringPalettes[Math.floor(rng() * ringPalettes.length)];
-        for (let b = numBands - 1; b >= 0; b--) {
-            const t0   = b / numBands;
-            const t1   = (b + 1) / numBands;
-            const r0   = innerR + (outerR - innerR) * t0;
-            const r1   = innerR + (outerR - innerR) * t1;
-            const col  = pal[b % pal.length];
-            const gap  = rng() < 0.35;
-            if (gap && b > 0 && b < numBands - 1) continue;
+        const innerR=radius*(1.28+rng()*0.18), outerR=radius*(2.1+rng()*0.9);
+        const tiltY=0.22+rng()*0.22, numBands=3+Math.floor(rng()*4);
+        const canvasW=Math.ceil(outerR*2+4), canvasH=Math.ceil(outerR*tiltY*2+4);
+        const cx=canvasW/2, cy=canvasH/2;
+        const canvas=document.createElement('canvas');
+        canvas.width=canvasW; canvas.height=canvasH;
+        const ctx=canvas.getContext('2d');
+        const ringPalettes=[[0xd4b896,0xc8a878,0xe8d4b0,0xb09070,0x988060],[0x88aacc,0x6688aa,0xaaccee,0x7799bb,0x557799],[0xccccaa,0xbbbb88,0xddddcc,0xaaaaaa,0x999977]];
+        const pal=ringPalettes[Math.floor(rng()*ringPalettes.length)];
+        for (let b=numBands-1;b>=0;b--) {
+            const t0=b/numBands, t1=(b+1)/numBands;
+            const r0=innerR+(outerR-innerR)*t0, r1=innerR+(outerR-innerR)*t1;
+            const col=pal[b%pal.length], gap=rng()<0.35;
+            if (gap&&b>0&&b<numBands-1) continue;
             ctx.beginPath();
-            ctx.ellipse(cx, cy, r1, r1 * tiltY, 0, 0, Math.PI * 2);
-            ctx.ellipse(cx, cy, r0, r0 * tiltY, 0, 0, Math.PI * 2);
-            const alpha = 0.55 + rng() * 0.35;
-            ctx.fillStyle = PlanetTextureGen._rgba(col, alpha);
+            ctx.ellipse(cx,cy,r1,r1*tiltY,0,0,Math.PI*2);
+            ctx.ellipse(cx,cy,r0,r0*tiltY,0,0,Math.PI*2);
+            ctx.fillStyle=PlanetTextureGen._rgba(col, 0.55+rng()*0.35);
             ctx.fill('evenodd');
         }
-        scene.textures.addCanvas(key, canvas);
-        return { key, canvasW, canvasH, innerR, outerR, tiltY };
+        scene.textures.addCanvas(key,canvas);
+        return {key,canvasW,canvasH,innerR,outerR,tiltY};
     }
 
     static regenerateRing(scene, oldKey, radius, seed) {
@@ -728,208 +721,252 @@ class PlanetTextureGen {
     }
 }
 
+
 // =============================================================================
-//  PLANET
+//  PLANET / STAR BODY
 // =============================================================================
 class Planet {
-    constructor(scene, x, y, opts = {}) {
+    constructor(scene, x, y, opts={}) {
         this.scene    = scene;
         this.planetId = scene.planetCounter++;
-        const radius = (typeof opts.radius === 'number' && opts.radius > 0)
-            ? opts.radius : Phaser.Math.Between(10, 42);
-        this.radius = radius;
-        this.mass   = (typeof opts.mass === 'number' && opts.mass > 0)
-            ? opts.mass : Math.max(4, radius * radius * 0.13);
-        this.color  = (typeof opts.color === 'number')
-            ? opts.color : Phaser.Utils.Array.GetRandom(scene.planetColours);
-        this.x  = x;  this.y  = y;
-        this.vx = (typeof opts.vx === 'number') ? opts.vx : 0;
-        this.vy = (typeof opts.vy === 'number') ? opts.vy : 0;
-        this.ax = 0;  this.ay = 0;
-        this.isDragged       = false;
-        this.mergedThisFrame = false;
-        this.isDebris        = !!opts.isDebris;
-        this.lifetime        = this.isDebris ? PHY.DEBRIS_LIFE_MS : Infinity;
-        this.poolSlot = null;
-        this.sprite   = null;
-        this.hitArea  = null;
-        this.ringBack = null;
-        this.ringFront= null;
-        this.ringMeta = null;
-        this.texSeed = (typeof opts.texSeed === 'number')
-            ? opts.texSeed
-            : (Math.random() * 0x7fffffff) | 0;
-        this.texKey  = null;
+        const radius  = (typeof opts.radius==='number'&&opts.radius>0)?opts.radius:Phaser.Math.Between(10,42);
+        this.radius   = radius;
+        this.isStar   = !!opts.isStar;
+        this.mass     = (typeof opts.mass==='number'&&opts.mass>0)?opts.mass
+            : this.isStar ? Math.max(10000,radius*radius*1.5) : Math.max(4,radius*radius*0.13);
+        this.color    = (typeof opts.color==='number')?opts.color:Phaser.Utils.Array.GetRandom(scene.planetColours);
+        this.x=x; this.y=y;
+        this.vx=(typeof opts.vx==='number')?opts.vx:0;
+        this.vy=(typeof opts.vy==='number')?opts.vy:0;
+        this.ax=0; this.ay=0;
+        this.isDragged=false; this.mergedThisFrame=false;
+        this.isDebris=!!opts.isDebris;
+        this.lifetime=this.isDebris?PHY.DEBRIS_LIFE_MS:Infinity;
+        this.poolSlot=null; this.sprite=null; this.hitArea=null;
+        this.ringBack=null; this.ringFront=null; this.ringMeta=null; this.glowGfx=null;
+        this.texSeed=(typeof opts.texSeed==='number')?opts.texSeed:(Math.random()*0x7fffffff)|0;
+        this.texKey=null; this._lastTexRadius=0;
+        // Planet type & heating — once heated to lava it permanently stays lava
+        this._planetType=opts._planetType||null;
+        this._currentType=opts._currentType||null; // what it currently looks like
+        // Temperature (Kelvin, abstract)
+        this.temperature=(typeof opts.temperature==='number')?opts.temperature
+            : this.isStar ? PHY.STAR_BASE_TEMP : PHY.PLANET_SPACE_TEMP;
 
-        // PERF: track the radius at which the texture was last generated
-        // so we can skip regeneration when the change is negligible
-        this._lastTexRadius = 0;
-
-        if (this.isDebris && radius <= 4) {
-            const slot = scene.debrisPool.acquire(x, y, radius, this.color);
-            if (slot) { this.poolSlot = slot; this.sprite = slot.spr; return; }
+        // Small debris uses pool
+        if (this.isDebris && radius<=4) {
+            const slot=scene.debrisPool.acquire(x,y,radius,this.color);
+            if (slot){this.poolSlot=slot;this.sprite=slot.spr;return;}
         }
-        if (this.isDebris) {
-            this.sprite = scene.add.circle(x, y, radius, this.color);
+
+        if (this.isStar) {
+            this._buildStarSprite(scene,x,y,radius);
+        } else if (this.isDebris) {
+            this.sprite=scene.add.circle(x,y,radius,this.color);
             this.sprite.setDepth(0);
         } else {
-            this.texKey = PlanetTextureGen.generate(scene, radius, this.texSeed);
-            this._lastTexRadius = radius;
-            this.sprite = scene.add.image(x, y, this.texKey);
+            if (!this._planetType) this._planetType=PlanetTextureGen.detectType(radius,this.texSeed);
+            if (!this._currentType) this._currentType=this._planetType;
+            this.texKey=PlanetTextureGen.generate(scene,radius,this.texSeed,this._currentType!==this._planetType?this._currentType:undefined);
+            this._lastTexRadius=radius;
+            this.sprite=scene.add.image(x,y,this.texKey);
             this.sprite.setDepth(1);
-            this.sprite.setDisplaySize(radius * 2, radius * 2);
-            if (PlanetTextureGen.shouldHaveRings(radius, this.texSeed)) {
-                this._buildRingSprites(scene, x, y, radius);
-            }
+            this.sprite.setDisplaySize(radius*2,radius*2);
+            if (PlanetTextureGen.shouldHaveRings(radius,this.texSeed)) this._buildRingSprites(scene,x,y,radius);
         }
+
         if (!this.isDebris) {
-            const hitR = radius;
-            this.hitArea = scene.add.circle(x, y, hitR, 0xffffff, 0);
+            const hitR=radius;
+            this.hitArea=scene.add.circle(x,y,hitR,0xffffff,0);
             this.hitArea.setDepth(2);
             this.hitArea.setInteractive({
-                hitArea:         new Phaser.Geom.Circle(0, 0, hitR),
-                hitAreaCallback: Phaser.Geom.Circle.Contains,
-                useHandCursor:   true,
-                draggable:       true,
+                hitArea:new Phaser.Geom.Circle(0,0,hitR),
+                hitAreaCallback:Phaser.Geom.Circle.Contains,
+                useHandCursor:true, draggable:true,
             });
-            this.hitArea.on('pointerdown', ptr => {
+            this.hitArea.on('pointerdown',ptr=>{
                 scene.selectPlanet(this);
-                if (ptr && ptr.event) ptr.event.stopPropagation();
-                const right = (ptr.event && ptr.event.button === 2) ||
-                              (typeof ptr.rightButtonDown === 'function' && ptr.rightButtonDown());
-                if (right) scene.showPlanetMenu(
-                    (ptr.event && ptr.event.clientX) || ptr.x,
-                    (ptr.event && ptr.event.clientY) || ptr.y);
+                if(ptr&&ptr.event)ptr.event.stopPropagation();
+                const right=(ptr.event&&ptr.event.button===2)||(typeof ptr.rightButtonDown==='function'&&ptr.rightButtonDown());
+                if(right){
+                    const ex=(ptr.event&&ptr.event.clientX)||ptr.x;
+                    const ey=(ptr.event&&ptr.event.clientY)||ptr.y;
+                    if(this.isStar) scene.showStarMenu(ex,ey);
+                    else            scene.showPlanetMenu(ex,ey);
+                }
             });
-            this.hitArea.on('dragstart', () => { this.isDragged = true; this.vx = this.vy = 0; });
-            this.hitArea.on('drag', (_p, dx, dy) => {
-                if (!this.isDragged) return;
-                this.x = dx; this.y = dy;
-                this._sync(); scene.updateSelectionRing();
-            });
-            this.hitArea.on('dragend', () => { this.isDragged = false; });
+            this.hitArea.on('dragstart',()=>{this.isDragged=true;this.vx=this.vy=0;});
+            this.hitArea.on('drag',(_p,dx,dy)=>{ if(!this.isDragged)return; this.x=dx;this.y=dy; this._sync();scene.updateSelectionRing(); });
+            this.hitArea.on('dragend',()=>{this.isDragged=false;});
         }
     }
 
-    _buildRingSprites(scene, x, y, radius) {
-        const meta = PlanetTextureGen.generateRing(scene, radius, this.texSeed);
-        this.ringMeta = meta;
-        const backKey  = meta.key + '-back';
-        const frontKey = meta.key + '-front';
-        this._makeHalfRingTexture(scene, meta, backKey,  'back');
-        this._makeHalfRingTexture(scene, meta, frontKey, 'front');
-        this.ringBack  = scene.add.image(x, y, backKey).setDepth(0.5);
-        this.ringFront = scene.add.image(x, y, frontKey).setDepth(1.5);
-        this.ringBack.setDisplaySize(meta.canvasW, meta.canvasH);
-        this.ringFront.setDisplaySize(meta.canvasW, meta.canvasH);
+    _buildStarSprite(scene,x,y,radius) {
+        this.glowGfx=scene.add.graphics(); this.glowGfx.setDepth(0.8);
+        this._glowColor=StarTextureGen.getGlowColor(this.texSeed);
+        this._updateGlow(x,y,radius);
+        this.texKey=StarTextureGen.generate(scene,radius,this.texSeed);
+        this._lastTexRadius=radius;
+        this.sprite=scene.add.image(x,y,this.texKey);
+        this.sprite.setDepth(1.2);
+        this.sprite.setDisplaySize(radius*2,radius*2);
     }
 
-    _makeHalfRingTexture(scene, meta, key, half) {
-        if (scene.textures.exists(key)) return;
-        const { canvasW, canvasH } = meta;
-        const srcCanvas = scene.textures.get(meta.key).getSourceImage();
-        const canvas  = document.createElement('canvas');
-        canvas.width  = canvasW;
-        canvas.height = canvasH;
-        const ctx     = canvas.getContext('2d');
-        ctx.drawImage(srcCanvas, 0, 0);
-        ctx.globalCompositeOperation = 'destination-out';
-        ctx.fillStyle = 'black';
-        if (half === 'back') {
-            ctx.fillRect(0, canvasH / 2, canvasW, canvasH / 2);
-        } else {
-            ctx.fillRect(0, 0, canvasW, canvasH / 2);
+    _updateGlow(x,y,radius) {
+        if(!this.glowGfx)return;
+        this.glowGfx.clear();
+        const col=this._glowColor||0xffaa00;
+        for(let layer=5;layer>=1;layer--){
+            this.glowGfx.fillStyle(col,0.03*layer);
+            this.glowGfx.fillCircle(x,y,radius*(1+layer*0.35));
         }
-        scene.textures.addCanvas(key, canvas);
+        this.glowGfx.fillStyle(0xffffff,0.08);
+        this.glowGfx.fillCircle(x,y,radius*1.05);
+    }
+
+    _buildRingSprites(scene,x,y,radius) {
+        const meta=PlanetTextureGen.generateRing(scene,radius,this.texSeed);
+        this.ringMeta=meta;
+        this._makeHalfRingTexture(scene,meta,meta.key+'-back','back');
+        this._makeHalfRingTexture(scene,meta,meta.key+'-front','front');
+        this.ringBack=scene.add.image(x,y,meta.key+'-back').setDepth(0.5);
+        this.ringFront=scene.add.image(x,y,meta.key+'-front').setDepth(1.5);
+        this.ringBack.setDisplaySize(meta.canvasW,meta.canvasH);
+        this.ringFront.setDisplaySize(meta.canvasW,meta.canvasH);
+    }
+
+    _makeHalfRingTexture(scene,meta,key,half) {
+        if(scene.textures.exists(key))return;
+        const{canvasW,canvasH}=meta;
+        const src=scene.textures.get(meta.key).getSourceImage();
+        const canvas=document.createElement('canvas');
+        canvas.width=canvasW;canvas.height=canvasH;
+        const ctx=canvas.getContext('2d');
+        ctx.drawImage(src,0,0);
+        ctx.globalCompositeOperation='destination-out';
+        ctx.fillStyle='black';
+        if(half==='back') ctx.fillRect(0,canvasH/2,canvasW,canvasH/2);
+        else              ctx.fillRect(0,0,canvasW,canvasH/2);
+        scene.textures.addCanvas(key,canvas);
     }
 
     integrate(dt) {
-        if (this.isDragged) { this.ax = 0; this.ay = 0; return; }
-        this.vx += this.ax * dt;  this.vy += this.ay * dt;
-        this.x  += this.vx * dt;  this.y  += this.vy * dt;
-        this.ax  = 0; this.ay = 0;
+        if(this.isDragged){this.ax=0;this.ay=0;return;}
+        this.vx+=this.ax*dt; this.vy+=this.ay*dt;
+        this.x+=this.vx*dt;  this.y+=this.vy*dt;
+        this.ax=0; this.ay=0;
         this._sync();
-        if (this.isDebris) {
-            this.lifetime -= dt * 1000;
-            if (this.sprite) this.sprite.setAlpha(Math.max(0, Math.min(1, this.lifetime / 8000)));
+        if(this.isDebris){
+            this.lifetime-=dt*1000;
+            if(this.sprite)this.sprite.setAlpha(Math.max(0,Math.min(1,this.lifetime/8000)));
         }
+        if(this.isStar&&this.glowGfx) this._updateGlow(this.x,this.y,this.radius);
     }
 
     _sync() {
-        if (this.sprite)     this.sprite.setPosition(this.x, this.y);
-        if (this.hitArea)    this.hitArea.setPosition(this.x, this.y);
-        if (this.ringBack)   this.ringBack.setPosition(this.x, this.y);
-        if (this.ringFront)  this.ringFront.setPosition(this.x, this.y);
+        if(this.sprite)    this.sprite.setPosition(this.x,this.y);
+        if(this.hitArea)   this.hitArea.setPosition(this.x,this.y);
+        if(this.ringBack)  this.ringBack.setPosition(this.x,this.y);
+        if(this.ringFront) this.ringFront.setPosition(this.x,this.y);
+    }
+
+    // Update planet type based on temperature — one-way progression for heating
+    // (terran→lava is permanent; cooling doesn't revert lava back)
+    updateTypeFromTemp() {
+        if(this.isStar||this.isDebris) return;
+        const t=this.temperature;
+        const base=this._planetType;
+        let newType=this._currentType||base;
+
+        if(base==='ice'&&t>=PHY.TEMP_ICE_TO_TERRAN&&newType==='ice') newType='terran';
+        if((base==='terran'||newType==='terran')&&t>=PHY.TEMP_TERRAN_TO_LAVA&&newType!=='lava') newType='lava';
+        if(base==='ice'&&newType==='terran'&&t<PHY.TEMP_ICE_TO_TERRAN) newType='ice'; // revert ice→terran if cooled
+        // lava never reverts
+
+        if(newType!==this._currentType) {
+            this._currentType=newType;
+            this._rebuildTexture();
+        }
+    }
+
+    _rebuildTexture() {
+        if(this.isStar||this.isDebris||!this.sprite) return;
+        const forceType=this._currentType!==this._planetType?this._currentType:undefined;
+        if(this.texKey&&this.scene.textures.exists(this.texKey)) this.scene.textures.remove(this.texKey);
+        this.texKey=PlanetTextureGen.generate(this.scene,this.radius,this.texSeed,forceType);
+        this._lastTexRadius=this.radius;
+        this.sprite.setTexture(this.texKey);
+        this.sprite.setDisplaySize(this.radius*2,this.radius*2);
+        // Flash
+        const g=this.scene.add.graphics().setDepth(20);
+        let t=0; const ev=this.scene.time.addEvent({delay:16,repeat:18,callback:()=>{
+            t+=16;const p=t/288;g.clear();
+            g.fillStyle(0xff6600,(1-p)*0.55);g.fillCircle(this.x,this.y,this.radius*(1.1+p));
+            if(p>=1){g.destroy();ev.remove();}
+        }});
     }
 
     refreshSprite() {
-        if (!this.sprite) return;
-        if (this.isDebris) {
-            if (typeof this.sprite.setRadius === 'function') {
-                this.sprite.setRadius(this.radius);
+        if(!this.sprite)return;
+        if(this.isStar){
+            const chg=Math.abs(this.radius-this._lastTexRadius)/(this._lastTexRadius||1);
+            if(chg>0.05){
+                this.texKey=StarTextureGen.regenerate(this.scene,this.texKey,this.radius,this.texSeed);
+                this._lastTexRadius=this.radius;
+                this.sprite.setTexture(this.texKey);
             }
+            this.sprite.setDisplaySize(this.radius*2,this.radius*2);
+            this._updateGlow(this.x,this.y,this.radius);
+        } else if(this.isDebris) {
+            if(typeof this.sprite.setRadius==='function') this.sprite.setRadius(this.radius);
         } else {
-            // PERF: only regenerate the texture if radius changed by more than 5%.
-            // Merges that absorb small bodies barely change the visual size —
-            // updating the canvas texture every time causes a big GC/draw spike.
-            const radiusChangeFrac = Math.abs(this.radius - this._lastTexRadius) / (this._lastTexRadius || 1);
-            if (radiusChangeFrac > 0.05) {
-                this.texKey = PlanetTextureGen.regenerate(this.scene, this.texKey, this.radius, this.texSeed);
-                this._lastTexRadius = this.radius;
+            const chg=Math.abs(this.radius-this._lastTexRadius)/(this._lastTexRadius||1);
+            if(chg>0.05){
+                const forceType=this._currentType!==this._planetType?this._currentType:undefined;
+                this.texKey=PlanetTextureGen.regenerate(this.scene,this.texKey,this.radius,this.texSeed,forceType);
+                this._lastTexRadius=this.radius;
                 this.sprite.setTexture(this.texKey);
                 this._destroyRingSprites();
-                if (PlanetTextureGen.shouldHaveRings(this.radius, this.texSeed)) {
-                    this._buildRingSprites(this.scene, this.x, this.y, this.radius);
-                }
+                if(PlanetTextureGen.shouldHaveRings(this.radius,this.texSeed)) this._buildRingSprites(this.scene,this.x,this.y,this.radius);
             }
-            // Always update the display size, even without a full texture regen
-            this.sprite.setDisplaySize(this.radius * 2, this.radius * 2);
+            this.sprite.setDisplaySize(this.radius*2,this.radius*2);
         }
-        if (this.hitArea) {
-            const hitR = this.radius;
-            this.hitArea.setRadius(hitR);
-            if (this.hitArea.input) this.hitArea.input.hitArea = new Phaser.Geom.Circle(0, 0, hitR);
+        if(this.hitArea){
+            this.hitArea.setRadius(this.radius);
+            if(this.hitArea.input) this.hitArea.input.hitArea=new Phaser.Geom.Circle(0,0,this.radius);
         }
     }
 
     _destroyRingSprites() {
-        if (this.ringBack) {
-            const bk = this.ringBack.texture?.key;
-            const fk = this.ringFront?.texture?.key;
-            this.ringBack.destroy();
-            if (this.ringFront) this.ringFront.destroy();
-            if (bk && this.scene.textures.exists(bk)) this.scene.textures.remove(bk);
-            if (fk && this.scene.textures.exists(fk)) this.scene.textures.remove(fk);
-            if (this.ringMeta?.key && this.scene.textures.exists(this.ringMeta.key))
-                this.scene.textures.remove(this.ringMeta.key);
-        }
-        this.ringBack  = null;
-        this.ringFront = null;
-        this.ringMeta  = null;
+        if(!this.ringBack)return;
+        const bk=this.ringBack.texture?.key,fk=this.ringFront?.texture?.key;
+        this.ringBack.destroy();
+        if(this.ringFront)this.ringFront.destroy();
+        if(bk&&this.scene.textures.exists(bk))this.scene.textures.remove(bk);
+        if(fk&&this.scene.textures.exists(fk))this.scene.textures.remove(fk);
+        if(this.ringMeta?.key&&this.scene.textures.exists(this.ringMeta.key))this.scene.textures.remove(this.ringMeta.key);
+        this.ringBack=null;this.ringFront=null;this.ringMeta=null;
     }
 
     destroy() {
-        if (this.poolSlot) {
-            this.scene.debrisPool.release(this.poolSlot);
-            this.poolSlot = null;
-        } else {
-            if (this.sprite)  this.sprite.destroy();
-            if (this.hitArea) this.hitArea.destroy();
-            if (this.texKey && this.scene.textures.exists(this.texKey)) {
-                this.scene.textures.remove(this.texKey);
-            }
+        if(this.poolSlot){this.scene.debrisPool.release(this.poolSlot);this.poolSlot=null;}
+        else{
+            if(this.sprite) this.sprite.destroy();
+            if(this.hitArea)this.hitArea.destroy();
+            if(this.glowGfx)this.glowGfx.destroy();
+            if(this.texKey&&this.scene.textures.exists(this.texKey))this.scene.textures.remove(this.texKey);
             this._destroyRingSprites();
         }
-        this.sprite = null; this.hitArea = null; this.texKey = null;
+        this.sprite=null;this.hitArea=null;this.texKey=null;this.glowGfx=null;
     }
 
     getState() {
-        return { x: this.x, y: this.y, radius: this.radius,
-                 mass: this.mass, vx: this.vx, vy: this.vy,
-                 color: this.color, texSeed: this.texSeed };
+        return {x:this.x,y:this.y,radius:this.radius,mass:this.mass,
+                vx:this.vx,vy:this.vy,color:this.color,texSeed:this.texSeed,
+                isStar:this.isStar,_planetType:this._planetType,
+                _currentType:this._currentType,temperature:this.temperature};
     }
-
-    setFriction() {}
+    setFriction(){}
 }
 
 // =============================================================================
@@ -944,501 +981,303 @@ class OpeningScreen extends Phaser.Scene {
         const sw = this.scale.width;
         const sh = this.scale.height;
 
-        this.planetList     = [];
-        this.planetCounter  = 0;
-        this._gravGrid      = new Map();
-        this._collGrid      = new Map();
-        this._rocheContacts = new Map();
-
-        // PERF: pre-allocated reusable neighbor scratch array
+        this.planetList    = [];
+        this.planetCounter = 0;
+        this._gravGrid     = new Map();
+        this._collGrid     = new Map();
+        this._rocheContacts= new Map();
         this._neighborScratch = [];
 
         this.planetColours = [
-            0xff4444, 0xdc143c, 0xff7043, 0xff8c00,
-            0xffd700, 0xc8ff40, 0x00e676, 0x1de9b6,
-            0x40c4ff, 0x448aff, 0x9c6fff, 0xe040fb,
-            0xf48fb1, 0xffffff, 0xaec6cf, 0x80cbc4,
+            0xff4444,0xdc143c,0xff7043,0xff8c00,0xffd700,0xc8ff40,0x00e676,0x1de9b6,
+            0x40c4ff,0x448aff,0x9c6fff,0xe040fb,0xf48fb1,0xffffff,0xaec6cf,0x80cbc4,
         ];
-
         this.debrisPool = new DebrisPool(this, 60);
 
         this.stars = this.add.group();
         for (let i = 0; i < 100; i++) {
             const star = this.add.circle(
-                Phaser.Math.Between(0, sw),
-                Phaser.Math.Between(0, sh),
-                Phaser.Math.Between(1, 2), 0xffffff
-            ).setDepth(-1).setAlpha(Phaser.Math.FloatBetween(0.3, 0.9));
-            star.twinkleSpeed = Phaser.Math.FloatBetween(0.6, 2.0);
-            star.twinklePhase = Phaser.Math.FloatBetween(0, Math.PI * 2);
+                Phaser.Math.Between(0,sw), Phaser.Math.Between(0,sh),
+                Phaser.Math.Between(1,2), 0xffffff
+            ).setDepth(-1).setAlpha(Phaser.Math.FloatBetween(0.3,0.9));
+            star.twinkleSpeed = Phaser.Math.FloatBetween(0.6,2.0);
+            star.twinklePhase = Phaser.Math.FloatBetween(0,Math.PI*2);
             star.baseAlpha    = star.alpha;
             this.stars.add(star);
         }
 
         const pad = 100;
-        const configs = [
-            Phaser.Math.Between(42, 62), Phaser.Math.Between(40, 58),
-            Phaser.Math.Between(18, 36), Phaser.Math.Between(16, 32),
-            Phaser.Math.Between(14, 28), Phaser.Math.Between(12, 24),
-            Phaser.Math.Between(10, 20),
-        ];
+        const configs = [62,55,32,28,22,18,14];
         for (const radius of configs) {
             const speed = Phaser.Math.FloatBetween(10, 30);
             const angle = Phaser.Math.FloatBetween(0, Math.PI * 2);
             this._spawnPlanet({
-                x:  Phaser.Math.FloatBetween(pad, sw - pad),
-                y:  Phaser.Math.FloatBetween(pad, sh - pad),
-                radius,
-                vx: Math.cos(angle) * speed,
-                vy: Math.sin(angle) * speed,
+                x:  Phaser.Math.FloatBetween(pad, sw-pad),
+                y:  Phaser.Math.FloatBetween(pad, sh-pad),
+                radius, vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed,
             });
         }
 
-        this.add.rectangle(cx, cy - 178, 400, 72, 0x00ffe7, 0.04)
+        this.add.rectangle(cx, cy-178, 400, 72, 0x00ffe7, 0.04)
             .setStrokeStyle(1, 0x00ffe7, 0.25).setDepth(10);
-
-        this.titleText = this.add.text(cx, cy - 178, 'SYSTEM SIM', {
-            fontFamily: '"Courier New", monospace', fontSize: '44px',
-            color: '#00ffe7', letterSpacing: 18, stroke: '#003333', strokeThickness: 4,
+        this.titleText = this.add.text(cx, cy-178, 'SYSTEM SIM', {
+            fontFamily:'"Courier New", monospace', fontSize:'44px',
+            color:'#00ffe7', letterSpacing:18, stroke:'#003333', strokeThickness:4,
         }).setOrigin(0.5).setDepth(11);
-
-        this.add.graphics().setDepth(10)
-            .lineStyle(1, 0x00ffe7, 0.4)
-            .lineBetween(cx - 180, cy - 148, cx + 180, cy - 148);
-
-        this.add.text(cx, cy - 132, 'v0.1.0  //  ORBITAL SANDBOX', {
-            fontFamily: '"Courier New", monospace', fontSize: '11px',
-            color: '#4ecdc4', letterSpacing: 5, alpha: 0.7,
+        this.add.graphics().setDepth(10).lineStyle(1,0x00ffe7,0.4)
+            .lineBetween(cx-180, cy-148, cx+180, cy-148);
+        this.add.text(cx, cy-132, 'v0.3.0  //  ORBITAL SANDBOX', {
+            fontFamily:'"Courier New", monospace', fontSize:'11px',
+            color:'#4ecdc4', letterSpacing:5, alpha:0.7,
         }).setOrigin(0.5).setDepth(10);
-
-        this.tweens.add({ targets: this.titleText, alpha: { from: 1, to: 0.75 },
-            duration: 2400, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+        this.tweens.add({ targets:this.titleText, alpha:{from:1,to:0.75},
+            duration:2400, yoyo:true, repeat:-1, ease:'Sine.easeInOut' });
 
         const buttonData = [
-            { label: 'NEW GAME',  action: () => this.scene.start('MainGame', { freshStart: true  }) },
-            { label: 'LOAD GAME', action: () => this.scene.start('MainGame', { freshStart: false }) },
-            { label: 'OPTIONS',   action: () => this.scene.start('Options') },
-            { label: 'QUIT GAME', action: () => { try { window.close(); } catch(e) {} } },
+            { label:'NEW GAME',  action:()=>this.scene.start('MainGame',{freshStart:true})  },
+            { label:'LOAD GAME', action:()=>this.scene.start('MainGame',{freshStart:false}) },
+            { label:'OPTIONS',   action:()=>this.scene.start('Options') },
+            { label:'QUIT GAME', action:()=>{ try{window.close();}catch(e){} } },
         ];
-        const startY = cy - 48, spacing = 62;
+        const startY = cy-48, spacing = 62;
         buttonData.forEach((btn, i) => {
-            const by = startY + i * spacing;
+            const by = startY + i*spacing;
             const bg = this.add.rectangle(cx, by, 220, 44, 0x001a2a)
-                .setStrokeStyle(1, 0x00ffe7, 0.5).setDepth(10).setInteractive({ useHandCursor: true });
+                .setStrokeStyle(1,0x00ffe7,0.5).setDepth(10).setInteractive({useHandCursor:true});
             const lbl = this.add.text(cx, by, btn.label, {
-                fontFamily: '"Courier New", monospace', fontSize: '17px',
-                color: '#00ffe7', letterSpacing: 5,
+                fontFamily:'"Courier New", monospace', fontSize:'17px',
+                color:'#00ffe7', letterSpacing:5,
             }).setOrigin(0.5).setDepth(11);
             bg.setAlpha(0); lbl.setAlpha(0);
-            this.tweens.add({ targets: [bg, lbl], alpha: 1, duration: 300,
-                delay: 200 + i * 90, ease: 'Sine.easeOut' });
-            bg.on('pointerover', () => { bg.setFillStyle(0x00ffe7, 0.14); lbl.setStyle({ color: '#ffffff' });
-                this.tweens.add({ targets: [bg, lbl], scaleX: 1.04, scaleY: 1.04, duration: 110, ease: 'Sine.easeOut' }); });
-            bg.on('pointerout',  () => { bg.setFillStyle(0x001a2a); lbl.setStyle({ color: '#00ffe7' });
-                this.tweens.add({ targets: [bg, lbl], scaleX: 1, scaleY: 1, duration: 110, ease: 'Sine.easeIn' }); });
-            bg.on('pointerdown', () => {
-                this.cameras.main.fade(200, 0, 0, 0);
-                this.time.delayedCall(200, btn.action);
+            this.tweens.add({targets:[bg,lbl],alpha:1,duration:300,delay:200+i*90,ease:'Sine.easeOut'});
+            bg.on('pointerover',()=>{bg.setFillStyle(0x00ffe7,0.14);lbl.setStyle({color:'#ffffff'});
+                this.tweens.add({targets:[bg,lbl],scaleX:1.04,scaleY:1.04,duration:110,ease:'Sine.easeOut'});});
+            bg.on('pointerout', ()=>{bg.setFillStyle(0x001a2a);lbl.setStyle({color:'#00ffe7'});
+                this.tweens.add({targets:[bg,lbl],scaleX:1,scaleY:1,duration:110,ease:'Sine.easeIn'});});
+            bg.on('pointerdown',()=>{
+                this.cameras.main.fade(200,0,0,0);
+                this.time.delayedCall(200,btn.action);
             });
         });
-
-        this.cameras.main.fadeIn(400, 0, 0, 0);
+        this.cameras.main.fadeIn(400,0,0,0);
     }
 
-    _vfxMerge(x, y, r) {
-        const explosionsOn = typeof GameSettings === 'undefined' || GameSettings.explosions;
-        if (!explosionsOn) return;
-        const g = this.add.graphics().setDepth(20);
-        let t = 0; const dur = 300;
-        const ev = this.time.addEvent({ delay: 16, repeat: Math.ceil(dur / 16),
-            callback: () => {
-                t += 16; const p = t / dur;
-                g.clear();
-                g.fillStyle(0xffffff, (1 - p) * 0.75);
-                g.fillCircle(x, y, r * (0.5 + p * 0.7));
-                if (p >= 1) { g.destroy(); ev.remove(); }
-            }
-        });
+    _vfxMerge(x,y,r){
+        if(!GameSettings.explosions)return;
+        const g=this.add.graphics().setDepth(20); let t=0; const dur=300;
+        const ev=this.time.addEvent({delay:16,repeat:Math.ceil(dur/16),callback:()=>{
+            t+=16; const p=t/dur; g.clear();
+            g.fillStyle(0xffffff,(1-p)*0.75); g.fillCircle(x,y,r*(0.5+p*0.7));
+            if(p>=1){g.destroy();ev.remove();}
+        }});
     }
-
-    _vfxDisrupt(x, y, r) {
-        const explosionsOn = typeof GameSettings === 'undefined' || GameSettings.explosions;
-        if (!explosionsOn) return;
-        const g = this.add.graphics().setDepth(20);
-        let t = 0; const dur = 500;
-        const ev = this.time.addEvent({ delay: 16, repeat: Math.ceil(dur / 16),
-            callback: () => {
-                t += 16; const p = t / dur;
-                g.clear();
-                g.fillStyle(0xff7700, (1 - p) * 0.5);
-                g.fillCircle(x, y, r * (1 + p * 2.2));
-                g.lineStyle(3 * (1 - p), 0xffbb00, (1 - p) * 0.9);
-                g.strokeCircle(x, y, r * (1.3 + p * 2.8));
-                if (p >= 1) { g.destroy(); ev.remove(); }
-            }
-        });
+    _vfxDisrupt(x,y,r){
+        if(!GameSettings.explosions)return;
+        const g=this.add.graphics().setDepth(20); let t=0; const dur=500;
+        const ev=this.time.addEvent({delay:16,repeat:Math.ceil(dur/16),callback:()=>{
+            t+=16; const p=t/dur; g.clear();
+            g.fillStyle(0xff7700,(1-p)*0.5); g.fillCircle(x,y,r*(1+p*2.2));
+            g.lineStyle(3*(1-p),0xffbb00,(1-p)*0.9); g.strokeCircle(x,y,r*(1.3+p*2.8));
+            if(p>=1){g.destroy();ev.remove();}
+        }});
     }
 
     static get MAX_OS_BODIES() { return 14; }
-
-    // PERF: integer hash avoids string allocation on every pair check
-    _cellKey(gx, gy) { return ((gx & 0xffff) | ((gy & 0xffff) << 16)) >>> 0; }
-
-    _buildGrid(bodies, cs, grid) {
+    _cellKey(gx,gy){return((gx&0xffff)|((gy&0xffff)<<16))>>>0;}
+    _buildGrid(bodies,cs,grid){
         grid.clear();
-        for (const b of bodies) {
-            const k = this._cellKey(Math.floor(b.x / cs), Math.floor(b.y / cs));
-            if (!grid.has(k)) grid.set(k, []);
+        for(const b of bodies){
+            const k=this._cellKey(Math.floor(b.x/cs),Math.floor(b.y/cs));
+            if(!grid.has(k))grid.set(k,[]);
             grid.get(k).push(b);
         }
     }
-
-    // PERF: reuse the scratch array instead of allocating a new one each call
-    _getNeighbors(b, cs, grid) {
-        const out = this._neighborScratch;
-        out.length = 0;
-        const gx = Math.floor(b.x / cs), gy = Math.floor(b.y / cs);
-        for (let dx = -1; dx <= 1; dx++)
-            for (let dy = -1; dy <= 1; dy++) {
-                const cell = grid.get(this._cellKey(gx + dx, gy + dy));
-                if (cell) for (const nb of cell) out.push(nb);
-            }
+    _getNeighbors(b,cs,grid){
+        const out=this._neighborScratch; out.length=0;
+        const gx=Math.floor(b.x/cs),gy=Math.floor(b.y/cs);
+        for(let dx=-1;dx<=1;dx++)for(let dy=-1;dy<=1;dy++){
+            const cell=grid.get(this._cellKey(gx+dx,gy+dy));
+            if(cell)for(const nb of cell)out.push(nb);
+        }
         return out;
     }
-
-    _applyGravity(bodies) {
-        const G = PHY.G, eps2 = PHY.SOFT * PHY.SOFT;
-        const baseD = PHY.MAX_GRAV_D, refMass = PHY.GRAV_REF_MASS, rangeMax = PHY.GRAV_RANGE_MAX;
-        // PERF: integer-keyed Set instead of string-keyed — drastically less GC
-        const done = new Set();
-        for (const a of bodies) {
-            for (const b of this._getNeighbors(a, PHY.GRAV_CELL, this._gravGrid)) {
-                if (b === a) continue;
-                // Pack two 16-bit IDs into one 32-bit integer key
-                const lo = a.planetId < b.planetId ? a.planetId : b.planetId;
-                const hi = a.planetId < b.planetId ? b.planetId : a.planetId;
-                const id = (lo << 16) | hi;
-                if (done.has(id)) continue;
-                done.add(id);
-                const dx = b.x - a.x, dy = b.y - a.y, d2 = dx*dx + dy*dy;
-                const scaleA = Math.min(rangeMax, Math.sqrt(a.mass / refMass));
-                const scaleB = Math.min(rangeMax, Math.sqrt(b.mass / refMass));
-                if (d2 > (baseD * Math.max(scaleA, scaleB)) ** 2) continue;
-                const inv = G / Math.pow(d2 + eps2, 1.5);
-                a.ax += inv * b.mass * dx;  a.ay += inv * b.mass * dy;
-                b.ax -= inv * a.mass * dx;  b.ay -= inv * a.mass * dy;
+    _applyGravity(bodies){
+        const G=PHY.G,eps2=PHY.SOFT*PHY.SOFT,baseD=PHY.MAX_GRAV_D,refMass=PHY.GRAV_REF_MASS,rangeMax=PHY.GRAV_RANGE_MAX;
+        const done=new Set();
+        for(const a of bodies){
+            for(const b of this._getNeighbors(a,PHY.GRAV_CELL,this._gravGrid)){
+                if(b===a)continue;
+                const lo=a.planetId<b.planetId?a.planetId:b.planetId;
+                const hi=a.planetId<b.planetId?b.planetId:a.planetId;
+                const id=(lo<<16)|hi;
+                if(done.has(id))continue; done.add(id);
+                const dx=b.x-a.x,dy=b.y-a.y,d2=dx*dx+dy*dy;
+                const scaleA=Math.min(rangeMax,Math.sqrt(a.mass/refMass));
+                const scaleB=Math.min(rangeMax,Math.sqrt(b.mass/refMass));
+                if(d2>(baseD*Math.max(scaleA,scaleB))**2)continue;
+                const inv=G/Math.pow(d2+eps2,1.5);
+                a.ax+=inv*b.mass*dx; a.ay+=inv*b.mass*dy;
+                b.ax-=inv*a.mass*dx; b.ay-=inv*a.mass*dy;
             }
         }
     }
-
-    _handleCollisions(bodies) {
-        for (const b of bodies) b.mergedThisFrame = false;
-        const toRemove = [], done = new Set(), activeGrind = new Set();
-        for (const a of bodies) {
-            if (a.mergedThisFrame) continue;
-            for (const b of this._getNeighbors(a, PHY.GRID_CELL, this._collGrid)) {
-                if (b === a || b.mergedThisFrame || a.mergedThisFrame) continue;
-                // PERF: integer pair key
-                const lo = a.planetId < b.planetId ? a.planetId : b.planetId;
-                const hi = a.planetId < b.planetId ? b.planetId : a.planetId;
-                const id = (lo << 16) | hi;
-                if (done.has(id)) continue;
-                done.add(id);
-                const dx   = b.x - a.x, dy = b.y - a.y;
-                const dist = Math.sqrt(dx*dx + dy*dy) || 0.001;
-                const sumR = a.radius + b.radius;
-                if (dist >= sumR) continue;
-                const ratio = dist / sumR;
-                const [big, sml] = a.mass >= b.mass ? [a, b] : [b, a];
-                if (ratio < PHY.MERGE_FRAC) {
+    _handleCollisions(bodies){
+        for(const b of bodies)b.mergedThisFrame=false;
+        const toRemove=[],done=new Set(),activeGrind=new Set();
+        for(const a of bodies){
+            if(a.mergedThisFrame)continue;
+            for(const b of this._getNeighbors(a,PHY.GRID_CELL,this._collGrid)){
+                if(b===a||b.mergedThisFrame||a.mergedThisFrame)continue;
+                const lo=a.planetId<b.planetId?a.planetId:b.planetId;
+                const hi=a.planetId<b.planetId?b.planetId:a.planetId;
+                const id=(lo<<16)|hi; if(done.has(id))continue; done.add(id);
+                const dx=b.x-a.x,dy=b.y-a.y,dist=Math.sqrt(dx*dx+dy*dy)||0.001;
+                const sumR=a.radius+b.radius; if(dist>=sumR)continue;
+                const ratio=dist/sumR;
+                const [big,sml]=a.mass>=b.mass?[a,b]:[b,a];
+                if(ratio<PHY.MERGE_FRAC){
                     this._rocheContacts.delete(id);
-                    const mT  = a.mass + b.mass;
-                    const nvx = (a.vx * a.mass + b.vx * b.mass) / mT;
-                    const nvy = (a.vy * a.mass + b.vy * b.mass) / mT;
-                    big.radius = Math.sqrt(big.radius**2 + sml.radius**2);
-                    big.mass   = mT;
-                    big.vx = nvx; big.vy = nvy;
-                    big.color  = this._blendColors(big.color, sml.color, sml.mass / mT);
-                    big.refreshSprite();
-                    big.mergedThisFrame = true;
-                    sml.mergedThisFrame = true;
-                    toRemove.push(sml);
-                    this._vfxMerge((a.x + b.x) * 0.5, (a.y + b.y) * 0.5, big.radius);
-                    continue;
+                    const mT=a.mass+b.mass, nvx=(a.vx*a.mass+b.vx*b.mass)/mT, nvy=(a.vy*a.mass+b.vy*b.mass)/mT;
+                    big.radius=Math.sqrt(big.radius**2+sml.radius**2); big.mass=mT; big.vx=nvx; big.vy=nvy;
+                    big.mergedThisFrame=sml.mergedThisFrame=true; toRemove.push(sml);
+                    this._vfxMerge((a.x+b.x)*0.5,(a.y+b.y)*0.5,big.radius); continue;
                 }
-                if (sml.radius <= 5) {
-                    this._bounce(a, b, dx, dy, dist, sumR);
-                    continue;
-                }
+                if(sml.radius<=5){this._bounce(a,b,dx,dy,dist,sumR);continue;}
                 activeGrind.add(id);
-                const grindCount = (this._rocheContacts.get(id) || 0) + 1;
-                this._rocheContacts.set(id, grindCount);
-                const relVx = sml.vx - big.vx, relVy = sml.vy - big.vy;
-                const speed = Math.sqrt(relVx*relVx + relVy*relVy);
-                const shouldMerge = speed >= PHY.ROCHE_FAST_THRESH || grindCount >= PHY.ROCHE_GRIND_FRAMES;
-                if (shouldMerge) {
+                const grindCount=(this._rocheContacts.get(id)||0)+1; this._rocheContacts.set(id,grindCount);
+                const relVx=sml.vx-big.vx,relVy=sml.vy-big.vy,speed=Math.sqrt(relVx*relVx+relVy*relVy);
+                if(speed>=PHY.ROCHE_FAST_THRESH||grindCount>=PHY.ROCHE_GRIND_FRAMES){
                     this._rocheContacts.delete(id);
-                    const mT  = a.mass + b.mass;
-                    const nvx = (a.vx * a.mass + b.vx * b.mass) / mT;
-                    const nvy = (a.vy * a.mass + b.vy * b.mass) / mT;
-                    big.radius = Math.sqrt(big.radius**2 + sml.radius**2);
-                    big.mass   = mT;
-                    big.vx = nvx; big.vy = nvy;
-                    big.color  = this._blendColors(big.color, sml.color, sml.mass / mT);
-                    big.refreshSprite();
-                    big.mergedThisFrame = true;
-                    sml.mergedThisFrame = true;
-                    toRemove.push(sml);
-                    this._vfxDisrupt((a.x + b.x) * 0.5, (a.y + b.y) * 0.5, sml.radius);
-                    this._vfxMerge(big.x, big.y, big.radius);
+                    const mT=a.mass+b.mass, nvx=(a.vx*a.mass+b.vx*b.mass)/mT, nvy=(a.vy*a.mass+b.vy*b.mass)/mT;
+                    big.radius=Math.sqrt(big.radius**2+sml.radius**2); big.mass=mT; big.vx=nvx; big.vy=nvy;
+                    big.mergedThisFrame=sml.mergedThisFrame=true; toRemove.push(sml);
+                    this._vfxDisrupt((a.x+b.x)*0.5,(a.y+b.y)*0.5,sml.radius);
+                    this._vfxMerge(big.x,big.y,big.radius);
                 } else {
-                    this._depenetrate(a, b, dx, dy, dist, sumR);
+                    this._depenetrate(a,b,dx,dy,dist,sumR);
                 }
             }
         }
-        for (const [pid] of this._rocheContacts)
-            if (!activeGrind.has(pid)) this._rocheContacts.delete(pid);
-        for (const dead of toRemove) this._removePlanet(dead);
+        for(const [pid] of this._rocheContacts)if(!activeGrind.has(pid))this._rocheContacts.delete(pid);
+        for(const dead of toRemove)this._removePlanet(dead);
     }
-
-    _depenetrate(a, b, dx, dy, dist, sumR) {
-        const nx = dx/dist, ny = dy/dist, mT = a.mass + b.mass, ov = sumR - dist;
-        a.x -= nx * ov * (b.mass / mT); a.y -= ny * ov * (b.mass / mT);
-        b.x += nx * ov * (a.mass / mT); b.y += ny * ov * (a.mass / mT);
+    _depenetrate(a,b,dx,dy,dist,sumR){
+        const nx=dx/dist,ny=dy/dist,mT=a.mass+b.mass,ov=sumR-dist;
+        a.x-=nx*ov*(b.mass/mT); a.y-=ny*ov*(b.mass/mT);
+        b.x+=nx*ov*(a.mass/mT); b.y+=ny*ov*(a.mass/mT);
         a._sync(); b._sync();
     }
-
-    _bounce(a, b, dx, dy, dist, sumR) {
-        this._depenetrate(a, b, dx, dy, dist, sumR);
-        const nx = dx/dist, ny = dy/dist;
-        const rvx = b.vx - a.vx, rvy = b.vy - a.vy, vN = rvx*nx + rvy*ny;
-        if (vN >= 0) return;
-        const invM = 1/a.mass + 1/b.mass, j = -(1 + PHY.BOUNCE_E) * vN / invM;
-        a.vx -= (j/a.mass)*nx; a.vy -= (j/a.mass)*ny;
-        b.vx += (j/b.mass)*nx; b.vy += (j/b.mass)*ny;
+    _bounce(a,b,dx,dy,dist,sumR){
+        this._depenetrate(a,b,dx,dy,dist,sumR);
+        const nx=dx/dist,ny=dy/dist,rvx=b.vx-a.vx,rvy=b.vy-a.vy,vN=rvx*nx+rvy*ny;
+        if(vN>=0)return;
+        const invM=1/a.mass+1/b.mass,j=-(1+PHY.BOUNCE_E)*vN/invM;
+        a.vx-=(j/a.mass)*nx; a.vy-=(j/a.mass)*ny;
+        b.vx+=(j/b.mass)*nx; b.vy+=(j/b.mass)*ny;
     }
-
-    _spawnPlanet(opts) {
-        const nonDebris = this.planetList.filter(p => !p.isDebris).length;
-        if (nonDebris >= OpeningScreen.MAX_OS_BODIES) return null;
-        const p = new Planet(this, opts.x, opts.y, opts);
-        this.planetList.push(p);
-        return p;
+    _spawnPlanet(opts){
+        if(this.planetList.filter(p=>!p.isDebris).length>=OpeningScreen.MAX_OS_BODIES)return null;
+        const p=new Planet(this,opts.x,opts.y,opts); this.planetList.push(p); return p;
     }
-
-    _removePlanet(p) {
-        const i = this.planetList.indexOf(p);
-        if (i !== -1) this.planetList.splice(i, 1);
-        p.destroy();
+    _removePlanet(p){
+        const i=this.planetList.indexOf(p); if(i!==-1)this.planetList.splice(i,1); p.destroy();
     }
-
-    _wrapPlanets() {
-        const sw = this.scale.width, sh = this.scale.height;
-        for (const p of this.planetList) {
-            const r = p.radius + 2;
-            if (p.x < -r)       { p.x += sw + r*2; p._sync(); }
-            if (p.x >  sw + r)  { p.x -= sw + r*2; p._sync(); }
-            if (p.y < -r)       { p.y += sh + r*2; p._sync(); }
-            if (p.y >  sh + r)  { p.y -= sh + r*2; p._sync(); }
+    _wrapPlanets(){
+        const sw=this.scale.width,sh=this.scale.height;
+        for(const p of this.planetList){
+            const r=p.radius+2;
+            if(p.x<-r){p.x+=sw+r*2;p._sync();} if(p.x>sw+r){p.x-=sw+r*2;p._sync();}
+            if(p.y<-r){p.y+=sh+r*2;p._sync();} if(p.y>sh+r){p.y-=sh+r*2;p._sync();}
         }
     }
-
-    _blendColors(cA, cB, t) {
-        const rA=(cA>>16)&0xff, gA=(cA>>8)&0xff, bA=cA&0xff;
-        const rB=(cB>>16)&0xff, gB=(cB>>8)&0xff, bB=cB&0xff;
-        return (Math.round(rA+(rB-rA)*t)<<16)|(Math.round(gA+(gB-gA)*t)<<8)|Math.round(bA+(bB-bA)*t);
+    _blendColors(cA,cB,t){
+        const rA=(cA>>16)&0xff,gA=(cA>>8)&0xff,bA=cA&0xff;
+        const rB=(cB>>16)&0xff,gB=(cB>>8)&0xff,bB=cB&0xff;
+        return(Math.round(rA+(rB-rA)*t)<<16)|(Math.round(gA+(gB-gA)*t)<<8)|Math.round(bA+(bB-bA)*t);
     }
-
-    _tintColor(c, f) {
-        return (Math.min(255,Math.round(((c>>16)&0xff)*f))<<16)|
-               (Math.min(255,Math.round(((c>>8)&0xff)*f))<<8)|
-                Math.min(255,Math.round((c&0xff)*f));
-    }
-
-    update(time, delta) {
-        this.stars.children.iterate(star => {
-            star.alpha = star.baseAlpha * (0.6 + 0.4 * Math.sin(
-                time * 0.001 * star.twinkleSpeed + star.twinklePhase));
+    update(time,delta){
+        this.stars.children.iterate(star=>{
+            star.alpha=star.baseAlpha*(0.6+0.4*Math.sin(time*0.001*star.twinkleSpeed+star.twinklePhase));
         });
-        const dt     = Math.min(delta, 50) / 1000;
-        const bodies = this.planetList;
-        if (bodies.length > 0) {
-            this._buildGrid(bodies, PHY.GRAV_CELL, this._gravGrid);
-            this._buildGrid(bodies, PHY.GRID_CELL,  this._collGrid);
+        const dt=Math.min(delta,50)/1000, bodies=this.planetList;
+        if(bodies.length>0){
+            this._buildGrid(bodies,PHY.GRAV_CELL,this._gravGrid);
+            this._buildGrid(bodies,PHY.GRID_CELL,this._collGrid);
             this._applyGravity(bodies);
-            for (const b of bodies) b.integrate(dt);
+            for(const b of bodies)b.integrate(dt);
             this._handleCollisions(bodies);
             this._wrapPlanets();
         }
     }
-
-    shutdown() {
-        for (const p of [...this.planetList]) p.destroy();
-        this.planetList = [];
-        this.debrisPool.releaseAll();
+    shutdown(){
+        for(const p of [...this.planetList])p.destroy();
+        this.planetList=[]; this.debrisPool.releaseAll();
     }
 }
+
 
 // =============================================================================
 //  OPTIONS SCENE
 // =============================================================================
 class Options extends Phaser.Scene {
     constructor() { super('Options'); }
-
     create() {
-        const { width, height } = this.cameras.main;
-        const cx = width / 2;
-        const cy = height / 2;
-
-        this.add.rectangle(cx, cy, width, height, 0x000812);
-
-        const scanGfx = this.add.graphics();
-        scanGfx.fillStyle(0x000000, 0.18);
-        for (let y = 0; y < height; y += 4) scanGfx.fillRect(0, y, width, 2);
-
-        const gridGfx = this.add.graphics();
-        gridGfx.lineStyle(1, 0x00ffe7, 0.05);
-        for (let x = 0; x < width; x += 40) gridGfx.lineBetween(x, 0, x, height);
-        for (let y = 0; y < height; y += 40) gridGfx.lineBetween(0, y, width, y);
-
-        this._drawCorners(cx, cy, width, height);
-
-        this.add.rectangle(cx, cy - 148, 260, 54, 0x00ffe7, 0.06)
-            .setStrokeStyle(1, 0x00ffe7, 0.4);
-
-        this.add.text(cx, cy - 148, 'OPTIONS', {
-            fontFamily: '"Courier New", monospace',
-            fontSize: '36px',
-            color: '#00ffe7',
-            letterSpacing: 14,
-        }).setOrigin(0.5);
-
-        this.add.graphics()
-            .lineStyle(1, 0x00ffe7, 0.5)
-            .lineBetween(cx - 180, cy - 120, cx + 180, cy - 120);
-
-        const settings = [
-            { label: 'AUDIO',        value: 'ON',      values: ['ON', 'OFF'] },
-            { label: 'GRAPHICS',     value: 'HIGH',    values: ['LOW', 'MEDIUM', 'HIGH'] },
-            { label: 'CONTROLS',     value: 'DEFAULT', values: ['DEFAULT', 'CUSTOM'] },
-            { label: 'SCREEN SHAKE', value: GameSettings.screenShake   ? 'ON' : 'OFF',
-              values: ['ON', 'OFF'],
-              onChange: v => { GameSettings.screenShake   = (v === 'ON'); GameSettings.save(); } },
-            { label: 'EXPLOSIONS',   value: GameSettings.explosions    ? 'ON' : 'OFF',
-              values: ['ON', 'OFF'],
-              onChange: v => { GameSettings.explosions    = (v === 'ON'); GameSettings.save(); } },
-            { label: 'PERF PANEL',   value: GameSettings.showPerfPanel ? 'ON' : 'OFF',
-              values: ['ON', 'OFF'],
-              onChange: v => { GameSettings.showPerfPanel = (v === 'ON'); GameSettings.save(); } },
+        const {width,height}=this.cameras.main, cx=width/2, cy=height/2;
+        this.add.rectangle(cx,cy,width,height,0x000812);
+        const scanGfx=this.add.graphics(); scanGfx.fillStyle(0x000000,0.18);
+        for(let y=0;y<height;y+=4)scanGfx.fillRect(0,y,width,2);
+        const gridGfx=this.add.graphics(); gridGfx.lineStyle(1,0x00ffe7,0.05);
+        for(let x=0;x<width;x+=40)gridGfx.lineBetween(x,0,x,height);
+        for(let y=0;y<height;y+=40)gridGfx.lineBetween(0,y,width,y);
+        this._drawCorners(cx,cy,width,height);
+        this.add.rectangle(cx,cy-148,260,54,0x00ffe7,0.06).setStrokeStyle(1,0x00ffe7,0.4);
+        this.add.text(cx,cy-148,'OPTIONS',{fontFamily:'"Courier New", monospace',fontSize:'36px',color:'#00ffe7',letterSpacing:14}).setOrigin(0.5);
+        this.add.graphics().lineStyle(1,0x00ffe7,0.5).lineBetween(cx-180,cy-120,cx+180,cy-120);
+        const settings=[
+            {label:'AUDIO',value:'ON',values:['ON','OFF']},
+            {label:'GRAPHICS',value:'HIGH',values:['LOW','MEDIUM','HIGH']},
+            {label:'CONTROLS',value:'DEFAULT',values:['DEFAULT','CUSTOM']},
+            {label:'SCREEN SHAKE',value:GameSettings.screenShake?'ON':'OFF',values:['ON','OFF'],onChange:v=>{GameSettings.screenShake=(v==='ON');GameSettings.save();}},
+            {label:'EXPLOSIONS',value:GameSettings.explosions?'ON':'OFF',values:['ON','OFF'],onChange:v=>{GameSettings.explosions=(v==='ON');GameSettings.save();}},
+            {label:'PERF PANEL',value:GameSettings.showPerfPanel?'ON':'OFF',values:['ON','OFF'],onChange:v=>{GameSettings.showPerfPanel=(v==='ON');GameSettings.save();}},
         ];
-
-        this.settingValues = {};
-        const dividerIdx = 3;
-        const rowStartY  = cy - 88;
-        const rowSpacing = 50;
-
-        settings.forEach((s, i) => {
-            const ry = rowStartY + i * rowSpacing;
-            if (i === dividerIdx) {
-                this.add.graphics()
-                    .lineStyle(1, 0x00ffe7, 0.18)
-                    .lineBetween(cx - 180, ry - 14, cx + 180, ry - 14);
-                this.add.text(cx - 170, ry - 22, 'GAMEPLAY', {
-                    fontFamily:    '"Courier New", monospace',
-                    fontSize:      '9px',
-                    color:         '#00ffe7',
-                    letterSpacing: 4,
-                    alpha:         0.45,
-                }).setOrigin(0, 1);
+        this.settingValues={};
+        const dividerIdx=3, rowStartY=cy-88, rowSpacing=50;
+        settings.forEach((s,i)=>{
+            const ry=rowStartY+i*rowSpacing;
+            if(i===dividerIdx){
+                this.add.graphics().lineStyle(1,0x00ffe7,0.18).lineBetween(cx-180,ry-14,cx+180,ry-14);
+                this.add.text(cx-170,ry-22,'GAMEPLAY',{fontFamily:'"Courier New", monospace',fontSize:'9px',color:'#00ffe7',letterSpacing:4,alpha:0.45}).setOrigin(0,1);
             }
-            this.add.rectangle(cx, ry, 360, 40, 0x001a2a, 0.9)
-                .setStrokeStyle(1, 0x00ffe7, 0.12);
-            this.add.text(cx - 140, ry, s.label, {
-                fontFamily: '"Courier New", monospace',
-                fontSize: '13px',
-                color: '#4ecdc4',
-                letterSpacing: 3,
-            }).setOrigin(0, 0.5);
-            const leftArr = this.add.text(cx + 40, ry, '◄', {
-                fontFamily: '"Courier New", monospace',
-                fontSize: '13px',
-                color: '#00ffe7',
-            }).setOrigin(0.5).setInteractive({ useHandCursor: true });
-            const valText = this.add.text(cx + 82, ry, s.value, {
-                fontFamily: '"Courier New", monospace',
-                fontSize: '13px',
-                color: '#ffffff',
-                letterSpacing: 2,
-            }).setOrigin(0.5);
-            const rightArr = this.add.text(cx + 124, ry, '►', {
-                fontFamily: '"Courier New", monospace',
-                fontSize: '13px',
-                color: '#00ffe7',
-            }).setOrigin(0.5).setInteractive({ useHandCursor: true });
-            let idx = s.values.indexOf(s.value);
-            this.settingValues[s.label] = s.value;
-            const update = () => {
-                const v = s.values[idx];
-                valText.setText(v);
-                this.settingValues[s.label] = v;
-                if (s.onChange) s.onChange(v);
-                this.tweens.add({ targets: valText, alpha: 0.2, duration: 60, yoyo: true });
-            };
-            leftArr.on('pointerdown',  () => { idx = (idx - 1 + s.values.length) % s.values.length; update(); });
-            rightArr.on('pointerdown', () => { idx = (idx + 1) % s.values.length; update(); });
-            [leftArr, rightArr].forEach(btn => {
-                btn.on('pointerover', () => btn.setStyle({ color: '#ffffff' }));
-                btn.on('pointerout',  () => btn.setStyle({ color: '#00ffe7' }));
-            });
+            this.add.rectangle(cx,ry,360,40,0x001a2a,0.9).setStrokeStyle(1,0x00ffe7,0.12);
+            this.add.text(cx-140,ry,s.label,{fontFamily:'"Courier New", monospace',fontSize:'13px',color:'#4ecdc4',letterSpacing:3}).setOrigin(0,0.5);
+            const leftArr=this.add.text(cx+40,ry,'◄',{fontFamily:'"Courier New", monospace',fontSize:'13px',color:'#00ffe7'}).setOrigin(0.5).setInteractive({useHandCursor:true});
+            const valText=this.add.text(cx+82,ry,s.value,{fontFamily:'"Courier New", monospace',fontSize:'13px',color:'#ffffff',letterSpacing:2}).setOrigin(0.5);
+            const rightArr=this.add.text(cx+124,ry,'►',{fontFamily:'"Courier New", monospace',fontSize:'13px',color:'#00ffe7'}).setOrigin(0.5).setInteractive({useHandCursor:true});
+            let idx=s.values.indexOf(s.value); this.settingValues[s.label]=s.value;
+            const update=()=>{const v=s.values[idx];valText.setText(v);this.settingValues[s.label]=v;if(s.onChange)s.onChange(v);this.tweens.add({targets:valText,alpha:0.2,duration:60,yoyo:true});};
+            leftArr.on('pointerdown',()=>{idx=(idx-1+s.values.length)%s.values.length;update();});
+            rightArr.on('pointerdown',()=>{idx=(idx+1)%s.values.length;update();});
+            [leftArr,rightArr].forEach(btn=>{btn.on('pointerover',()=>btn.setStyle({color:'#ffffff'}));btn.on('pointerout',()=>btn.setStyle({color:'#00ffe7'}));});
         });
-
-        const backY  = rowStartY + settings.length * rowSpacing + 22;
-        const backBg = this.add.rectangle(cx, backY, 160, 42, 0x001a2a)
-            .setStrokeStyle(1, 0x00ffe7, 0.6)
-            .setInteractive({ useHandCursor: true });
-        const backLabel = this.add.text(cx, backY, '← BACK', {
-            fontFamily: '"Courier New", monospace',
-            fontSize: '16px',
-            color: '#00ffe7',
-            letterSpacing: 4,
-        }).setOrigin(0.5);
-        backBg.on('pointerover', () => {
-            backBg.setFillStyle(0x00ffe7, 0.15);
-            backLabel.setStyle({ color: '#ffffff' });
-        });
-        backBg.on('pointerout', () => {
-            backBg.setFillStyle(0x001a2a);
-            backLabel.setStyle({ color: '#00ffe7' });
-        });
-        backBg.on('pointerdown', () => {
-            this.cameras.main.fade(200, 0, 0, 0);
-            this.time.delayedCall(200, () => this.scene.start('OpeningScreen'));
-        });
-
-        this.time.addEvent({
-            delay: Phaser.Math.Between(3000, 6000),
-            callback: () => {
-                this.cameras.main.setAlpha(0.85);
-                this.time.delayedCall(60, () => this.cameras.main.setAlpha(1));
-            },
-            loop: true,
-        });
-
-        this.cameras.main.fadeIn(300, 0, 0, 0);
+        const backY=rowStartY+settings.length*rowSpacing+22;
+        const backBg=this.add.rectangle(cx,backY,160,42,0x001a2a).setStrokeStyle(1,0x00ffe7,0.6).setInteractive({useHandCursor:true});
+        const backLabel=this.add.text(cx,backY,'← BACK',{fontFamily:'"Courier New", monospace',fontSize:'16px',color:'#00ffe7',letterSpacing:4}).setOrigin(0.5);
+        backBg.on('pointerover',()=>{backBg.setFillStyle(0x00ffe7,0.15);backLabel.setStyle({color:'#ffffff'});});
+        backBg.on('pointerout', ()=>{backBg.setFillStyle(0x001a2a);backLabel.setStyle({color:'#00ffe7'});});
+        backBg.on('pointerdown',()=>{this.cameras.main.fade(200,0,0,0);this.time.delayedCall(200,()=>this.scene.start('OpeningScreen'));});
+        this.time.addEvent({delay:Phaser.Math.Between(3000,6000),callback:()=>{this.cameras.main.setAlpha(0.85);this.time.delayedCall(60,()=>this.cameras.main.setAlpha(1));},loop:true});
+        this.cameras.main.fadeIn(300,0,0,0);
     }
-
-    _drawCorners(cx, cy, w, h) {
-        const g    = this.add.graphics();
-        g.lineStyle(2, 0x00ffe7, 0.7);
-        const size = 22, pad = 16;
-        [[pad, pad, 1, 1], [w-pad, pad, -1, 1], [pad, h-pad, 1, -1], [w-pad, h-pad, -1, -1]]
-            .forEach(([x, y, dx, dy]) => {
-                g.beginPath();
-                g.moveTo(x, y + dy*size); g.lineTo(x, y); g.lineTo(x + dx*size, y);
-                g.strokePath();
-            });
+    _drawCorners(cx,cy,w,h){
+        const g=this.add.graphics(); g.lineStyle(2,0x00ffe7,0.7);
+        const size=22,pad=16;
+        [[pad,pad,1,1],[w-pad,pad,-1,1],[pad,h-pad,1,-1],[w-pad,h-pad,-1,-1]].forEach(([x,y,dx,dy])=>{
+            g.beginPath();g.moveTo(x,y+dy*size);g.lineTo(x,y);g.lineTo(x+dx*size,y);g.strokePath();
+        });
     }
 }
+
 
 // =============================================================================
 //  LOAD GAME SCENE
@@ -1446,20 +1285,15 @@ class Options extends Phaser.Scene {
 class LoadGame extends Phaser.Scene {
     constructor() { super('LoadGame'); }
     create() {
-        const cx = this.cameras.main.centerX;
-        const cy = this.cameras.main.centerY;
-        this.add.text(cx, cy - 40, 'Load Game Scene', {
-            font: '32px Arial', fill: '#fff'
-        }).setOrigin(0.5);
-        const back = this.add.text(cx, cy + 120, 'BACK', {
-            font: '26px Arial', fill: '#fff',
-            backgroundColor: '#111', padding: { x: 20, y: 8 }
-        }).setOrigin(0.5).setInteractive({ useHandCursor: true });
-        back.on('pointerdown', () => this.scene.start('OpeningScreen'));
-        back.on('pointerover', () => back.setStyle({ fill: '#ffccff', backgroundColor: '#331133' }));
-        back.on('pointerout',  () => back.setStyle({ fill: '#fff',    backgroundColor: '#111' }));
+        const cx=this.cameras.main.centerX, cy=this.cameras.main.centerY;
+        this.add.text(cx,cy-40,'Load Game Scene',{font:'32px Arial',fill:'#fff'}).setOrigin(0.5);
+        const back=this.add.text(cx,cy+120,'BACK',{font:'26px Arial',fill:'#fff',backgroundColor:'#111',padding:{x:20,y:8}}).setOrigin(0.5).setInteractive({useHandCursor:true});
+        back.on('pointerdown',()=>this.scene.start('OpeningScreen'));
+        back.on('pointerover',()=>back.setStyle({fill:'#ffccff',backgroundColor:'#331133'}));
+        back.on('pointerout', ()=>back.setStyle({fill:'#fff',backgroundColor:'#111'}));
     }
 }
+
 
 // =============================================================================
 //  MAIN GAME SCENE
@@ -1468,30 +1302,24 @@ class MainGame extends Phaser.Scene {
     constructor() { super('MainGame'); }
 
     create() {
-        this.planetList    = [];
+        this.planetList  = [];  // non-debris bodies
+        this.debrisList  = [];  // debris bodies (separate list)
         this.planetCounter = 0;
 
         this.planetColours = [
-            0xff4444, 0xdc143c, 0xff7043, 0xff8c00,
-            0xffd700, 0xc8ff40, 0x00e676, 0x1de9b6,
-            0x40c4ff, 0x448aff, 0x9c6fff, 0xe040fb,
-            0xf48fb1, 0xffffff, 0xaec6cf, 0x80cbc4,
+            0xff4444,0xdc143c,0xff7043,0xff8c00,0xffd700,0xc8ff40,0x00e676,0x1de9b6,
+            0x40c4ff,0x448aff,0x9c6fff,0xe040fb,0xf48fb1,0xffffff,0xaec6cf,0x80cbc4,
         ];
 
-        // PERF: pool sized to match new MAX_BODIES cap
-        this.debrisPool = new DebrisPool(this, 220);
+        this.debrisPool = new DebrisPool(this, PHY.MAX_DEBRIS + 20);
 
-        this.speedFactors      = [0, 0.25, 0.5, 1, 2, 4, 8, 16, 32];
+        this.speedFactors      = [0,0.25,0.5,1,2,4,8,16,32];
         this.currentSpeedIndex = 3;
         this.speedFactor       = this.speedFactors[this.currentSpeedIndex];
 
-        this._gravGrid = new Map();
         this._collGrid = new Map();
         this._rocheContacts = new Map();
-
-        // PERF: reusable neighbor scratch arrays (one per grid type)
-        this._gravScratch = [];
-        this._collScratch = [];
+        this._collScratch   = [];
 
         this.selectedPlanet = null;
         this.selectionRing  = this.add.graphics().setDepth(10);
@@ -1509,766 +1337,897 @@ class MainGame extends Phaser.Scene {
         this._kLeft  = () => this._changeSpeed(-1);
         this._kRight = () => this._changeSpeed(+1);
         this._kQ     = () => this.addPlanet();
+        this._kZ     = () => this.addStar();
         this._kE     = () => this.clearAllPlanets();
         this._kSpace = () => this._setSpeedZero();
+        this._kF     = () => this.clearAllDebris();
+        this._kR     = () => this.removeOffscreen();
 
         this.input.keyboard.on('keydown-ESC',   this._kESC);
         this.input.keyboard.on('keydown-LEFT',  this._kLeft);
         this.input.keyboard.on('keydown-RIGHT', this._kRight);
         this.input.keyboard.on('keydown-Q',     this._kQ);
+        this.input.keyboard.on('keydown-Z',     this._kZ);
         this.input.keyboard.on('keydown-E',     this._kE);
         this.input.keyboard.on('keydown-SPACE', this._kSpace);
+        this.input.keyboard.on('keydown-F',     this._kF);
+        this.input.keyboard.on('keydown-R',     this._kR);
 
-        this.input.on('pointerdown', (_p, objs) => {
-            if (!objs || objs.length === 0) this.deselectPlanet();
-        });
+        this.input.on('pointerdown',(_p,objs)=>{ if(!objs||objs.length===0) this.deselectPlanet(); });
 
-        this.input.on('wheel', (_p, _o, _dx, dy) => {
-            if (this.selectedPlanet) {
-                const p      = this.selectedPlanet;
-                const factor = dy > 0 ? 0.93 : 1.08;
-                p.radius = Math.max(4, Math.min(300, p.radius * factor));
-                p.mass   = p.radius * p.radius * 0.13;
-                p.refreshSprite();
-                this.updateSelectionRing();
-                this.scheduleSave();
+        this.input.on('wheel',(_p,_o,_dx,dy)=>{
+            if(this.selectedPlanet){
+                const p=this.selectedPlanet, factor=dy>0?0.93:1.08;
+                p.radius=Math.max(4,Math.min(500,p.radius*factor));
+                p.mass=p.isStar?p.radius*p.radius*1.5:p.radius*p.radius*0.13;
+                p.refreshSprite(); this.updateSelectionRing(); this.scheduleSave();
             } else {
-                const z = Phaser.Math.Clamp(
-                    this.cameras.main.zoom * (1 - dy * 0.004), 0.07, 5);
+                const z=Phaser.Math.Clamp(this.cameras.main.zoom*(1-dy*0.004),0.03,5);
                 this.cameras.main.setZoom(z);
             }
         });
 
-        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('contextmenu',e=>e.preventDefault());
         this._initDomMenu();
 
-        this._saveKey      = 'maingame-v3';
-        this._saveTimeout  = null;
-        this._lastPerfTime = 0;
-        this._frameCount   = 0;
+        this._saveKey='maingame-v5';
+        this._saveTimeout=null;
+        this._lastPerfTime=0;
+        this._frameCount=0;
+        this._supernovaActive=false;
+        // Anti-lag: track frame time for adaptive throttling
+        this._lastFrameTime=performance.now();
+        this._gravSkipCounter=0;
 
-        const sceneData = this.scene.settings.data;
-        if (sceneData && sceneData.freshStart === true) {
-            try { localStorage.removeItem(this._saveKey); } catch(e) {}
-        }
-
+        const sceneData=this.scene.settings.data;
+        if(sceneData&&sceneData.freshStart===true){ try{localStorage.removeItem(this._saveKey);}catch(e){} }
         this.loadPlanets();
 
-        this.events.on('shutdown', () => {
-            this.input.keyboard.off('keydown-ESC',   this._kESC);
-            this.input.keyboard.off('keydown-LEFT',  this._kLeft);
-            this.input.keyboard.off('keydown-RIGHT', this._kRight);
-            this.input.keyboard.off('keydown-Q',     this._kQ);
-            this.input.keyboard.off('keydown-E',     this._kE);
-            this.input.keyboard.off('keydown-SPACE', this._kSpace);
-            try { document.removeEventListener('keydown',     this._domKeyListener);  } catch(e){}
-            try { document.removeEventListener('pointerdown', this._domOutsideClick); } catch(e){}
-            if (this._saveTimeout) clearTimeout(this._saveTimeout);
+        this.events.on('shutdown',()=>{
+            this.input.keyboard.off('keydown-ESC',  this._kESC);
+            this.input.keyboard.off('keydown-LEFT', this._kLeft);
+            this.input.keyboard.off('keydown-RIGHT',this._kRight);
+            this.input.keyboard.off('keydown-Q',    this._kQ);
+            this.input.keyboard.off('keydown-Z',    this._kZ);
+            this.input.keyboard.off('keydown-E',    this._kE);
+            this.input.keyboard.off('keydown-SPACE',this._kSpace);
+            this.input.keyboard.off('keydown-F',    this._kF);
+            this.input.keyboard.off('keydown-R',    this._kR);
+            try{document.removeEventListener('keydown',    this._domKeyListener);}catch(e){}
+            try{document.removeEventListener('pointerdown',this._domOutsideClick);}catch(e){}
+            if(this._saveTimeout)clearTimeout(this._saveTimeout);
             this._removeHUD();
         });
     }
 
     // ── HUD ───────────────────────────────────────────────────────────────────
     _buildHUD() {
-        const style = document.createElement('style');
-        style.id = 'mg-hud-style';
-        style.textContent = `
-            #mg-hud {
-                position:fixed; inset:0; pointer-events:none; z-index:9000;
-                font-family:'Courier New', Courier, monospace;
-            }
-            #mg-speed {
-                position:absolute; top:14px; left:16px;
-                font-size:14px; font-weight:bold; letter-spacing:0.08em;
-                color:#e0e8ff; text-shadow:0 0 10px #4488ff99;
-            }
-            #mg-speed em { font-style:normal; color:#7ef7ff; text-shadow:0 0 12px #7ef7ffaa; }
-            #mg-perf {
-                position:absolute; top:14px; right:16px;
-                font-size:13px; text-align:right; letter-spacing:0.05em;
-                color:#ffff66; text-shadow:0 0 8px #ffff4466; line-height:1.6;
-            }
-            #mg-fps    { display:block; }
-            #mg-bodies { display:block; color:#aabbcc; }
-            #mg-help {
-                position:absolute; bottom:10px; left:50%;
-                transform:translateX(-50%);
-                font-size:11px; color:#ffffff; letter-spacing:0.06em;
-                white-space:nowrap; text-shadow:0 1px 4px #000a;
-            }
+        const style=document.createElement('style');
+        style.id='mg-hud-style';
+        style.textContent=`
+            #mg-hud{position:fixed;inset:0;pointer-events:none;z-index:9000;font-family:'Courier New',Courier,monospace;}
+            #mg-speed{position:absolute;top:14px;left:16px;font-size:14px;font-weight:bold;letter-spacing:0.08em;color:#e0e8ff;text-shadow:0 0 10px #4488ff99;}
+            #mg-speed em{font-style:normal;color:#7ef7ff;text-shadow:0 0 12px #7ef7ffaa;}
+            #mg-perf{position:absolute;top:14px;right:16px;font-size:12px;text-align:right;letter-spacing:0.05em;color:#ffff66;text-shadow:0 0 8px #ffff4466;line-height:1.7;}
+            #mg-fps{display:block;} #mg-bodies{display:block;color:#aabbcc;} #mg-debris-ct{display:block;color:#ff9944;}
+            #mg-help{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);font-size:10px;color:#ffffffcc;letter-spacing:0.05em;white-space:nowrap;text-shadow:0 1px 4px #000a;}
         `;
         document.head.appendChild(style);
-
-        const hud = document.createElement('div');
-        hud.id = 'mg-hud';
-        hud.innerHTML = `
+        const hud=document.createElement('div');
+        hud.id='mg-hud';
+        hud.innerHTML=`
             <div id="mg-speed">SPEED <em id="mg-speed-val">${this.speedFactor}&times;</em></div>
             <div id="mg-perf">
                 <em id="mg-fps">FPS: --</em>
                 <em id="mg-bodies">Bodies: 0</em>
+                <em id="mg-debris-ct">Debris: 0</em>
             </div>
             <div id="mg-help">
-                Q&nbsp;add &nbsp;|&nbsp; E&nbsp;clear &nbsp;|&nbsp;
+                Q&nbsp;planet &nbsp;|&nbsp; Z&nbsp;star &nbsp;|&nbsp; E&nbsp;clear &nbsp;|&nbsp;
+                F&nbsp;rm debris &nbsp;|&nbsp; R&nbsp;rm offscreen &nbsp;|&nbsp;
                 ←/→&nbsp;speed &nbsp;|&nbsp; Space&nbsp;pause &nbsp;|&nbsp;
-                WASD&nbsp;pan &nbsp;|&nbsp; Scroll&nbsp;zoom/resize &nbsp;|&nbsp; Right-click&nbsp;edit
+                WASD&nbsp;pan &nbsp;|&nbsp; Scroll&nbsp;zoom/resize &nbsp;|&nbsp; RClick&nbsp;edit
             </div>
         `;
         document.body.appendChild(hud);
-
-        this._hudSpeedVal = document.getElementById('mg-speed-val');
-        this._hudFPS      = document.getElementById('mg-fps');
-        this._hudBodies   = document.getElementById('mg-bodies');
+        this._hudSpeedVal=document.getElementById('mg-speed-val');
+        this._hudFPS=document.getElementById('mg-fps');
+        this._hudBodies=document.getElementById('mg-bodies');
+        this._hudDebris=document.getElementById('mg-debris-ct');
     }
-
-    _removeHUD() {
-        document.getElementById('mg-hud')?.remove();
-        document.getElementById('mg-hud-style')?.remove();
-    }
-
-    _updateHUD(n, fps) {
-        if (this._hudSpeedVal) this._hudSpeedVal.innerHTML = `${this.speedFactor}&times;`;
-        const showPerf = typeof GameSettings === 'undefined' || GameSettings.showPerfPanel;
-        const perfEl   = document.getElementById('mg-perf');
-        if (perfEl) perfEl.style.display = showPerf ? '' : 'none';
-        if (showPerf) {
-            if (this._hudBodies) this._hudBodies.textContent = `Bodies: ${n}`;
-            if (this._hudFPS) {
-                this._hudFPS.textContent = `FPS: ${fps}`;
-                const f = parseFloat(fps);
-                this._hudFPS.style.color = f >= 50 ? '#44ff88' : f >= 30 ? '#ffaa44' : '#ff4444';
+    _removeHUD(){ document.getElementById('mg-hud')?.remove(); document.getElementById('mg-hud-style')?.remove(); }
+    _updateHUD(nb,nd,fps){
+        if(this._hudSpeedVal)this._hudSpeedVal.innerHTML=`${this.speedFactor}&times;`;
+        const perfEl=document.getElementById('mg-perf');
+        if(perfEl)perfEl.style.display=GameSettings.showPerfPanel?'':'none';
+        if(GameSettings.showPerfPanel){
+            if(this._hudBodies)this._hudBodies.textContent=`Bodies: ${nb}`;
+            if(this._hudDebris)this._hudDebris.textContent=`Debris: ${nd}`;
+            if(this._hudFPS){
+                this._hudFPS.textContent=`FPS: ${fps}`;
+                const f=parseFloat(fps);
+                this._hudFPS.style.color=f>=50?'#44ff88':f>=30?'#ffaa44':'#ff4444';
             }
         }
     }
+
+    // ── ALL BODIES combined for gravity/collision ─────────────────────────────
+    get allBodies() { return this.planetList.concat(this.debrisList); }
 
     // ── Update loop ───────────────────────────────────────────────────────────
     update(time, delta) {
-        const dt     = (Math.min(delta, 50) * this.speedFactor) / 1000;
-        const bodies = this.planetList;
-        const n      = bodies.length;
+        const now=performance.now();
+        const frameDt=now-this._lastFrameTime;
+        this._lastFrameTime=now;
+        const dt=(Math.min(delta,60)*this.speedFactor)/1000;
 
-        if (n > 0 && this.speedFactor > 0) {
-            this._buildGravGrid(bodies);
-            this._buildCollGrid(bodies);
-            this._applyGravity(bodies);
-            for (let i = 0; i < n; i++) bodies[i].integrate(dt);
+        const planets=this.planetList;
+        const debris=this.debrisList;
+        const all=this.allBodies;
+        const n=all.length;
+
+        if(n>0&&this.speedFactor>0){
+            // Anti-lag: skip gravity computation on heavy frames but never more than 2 in a row
+            const heavyFrame=frameDt>50&&n>80;
+            this._gravSkipCounter=heavyFrame?this._gravSkipCounter+1:0;
+            if(this._gravSkipCounter<=1||!heavyFrame){
+                this._applyGravityInfinite(all);
+            }
+            for(let i=0;i<planets.length;i++) planets[i].integrate(dt);
+            for(let i=0;i<debris.length;i++)  debris[i].integrate(dt);
+            this._buildCollGrid(all);
             this._handleCollisions();
+            this._updateTemperatures(dt);
             this._cleanupDebris();
+            this._promoteDebris();
         }
 
-        if (this.selectedPlanet) this.updateSelectionRing();
+        if(this.selectedPlanet) this.updateSelectionRing();
+        const cam=this.cameras.main;
+        const cs=this._camSpeed/cam.zoom;
+        if(this._wKey.isDown)cam.scrollY-=cs; if(this._sKey.isDown)cam.scrollY+=cs;
+        if(this._aKey.isDown)cam.scrollX-=cs; if(this._dKey.isDown)cam.scrollX+=cs;
 
-        const cam = this.cameras.main;
-        const cs  = this._camSpeed / cam.zoom;
-        if (this._wKey.isDown) cam.scrollY -= cs;
-        if (this._sKey.isDown) cam.scrollY += cs;
-        if (this._aKey.isDown) cam.scrollX -= cs;
-        if (this._dKey.isDown) cam.scrollX += cs;
-
-        if (this.selectedPlanet && this._menuEl &&
-            this._menuEl.style.display !== 'none') {
-            if (document.activeElement !== this._inVx)
-                this._inVx.value = this.selectedPlanet.vx.toFixed(2);
-            if (document.activeElement !== this._inVy)
-                this._inVy.value = this.selectedPlanet.vy.toFixed(2);
+        // Live menu updates (only when visible, not when field is focused)
+        if(this.selectedPlanet&&this._menuEl&&this._menuEl.style.display!=='none'){
+            const p=this.selectedPlanet;
+            if(document.activeElement!==this._inVx)     this._inVx.value=p.vx.toFixed(2);
+            if(document.activeElement!==this._inVy)     this._inVy.value=p.vy.toFixed(2);
+            if(document.activeElement!==this._inRadius) this._inRadius.value=p.radius.toFixed(1);
+            if(document.activeElement!==this._inMass)   this._inMass.value=p.mass.toFixed(1);
+            if(document.activeElement!==this._inTemp)   this._inTemp.value=Math.round(p.temperature);
+            this._updateMenuInfoDisplays(p,false);
+        }
+        if(this.selectedPlanet&&this._starMenuEl&&this._starMenuEl.style.display!=='none'){
+            const p=this.selectedPlanet;
+            if(document.activeElement!==this._inStarVx)    this._inStarVx.value=p.vx.toFixed(2);
+            if(document.activeElement!==this._inStarVy)    this._inStarVy.value=p.vy.toFixed(2);
+            if(document.activeElement!==this._inStarRadius)this._inStarRadius.value=p.radius.toFixed(1);
+            if(document.activeElement!==this._inStarMass)  this._inStarMass.value=p.mass.toFixed(0);
+            if(document.activeElement!==this._inStarTemp)  this._inStarTemp.value=Math.round(p.temperature);
+            this._updateMenuInfoDisplays(p,true);
         }
 
-        const wv = cam.worldView;
-        const iz = 1 / cam.zoom;
+        const wv=cam.worldView; const iz=1/cam.zoom;
         this.borderGfx.clear();
-        this.borderGfx.lineStyle(2 * iz, 0x2a3a4a, 1);
-        this.borderGfx.strokeRect(wv.x + iz, wv.y + iz, wv.width - 2*iz, wv.height - 2*iz);
+        this.borderGfx.lineStyle(2*iz,0x2a3a4a,1);
+        this.borderGfx.strokeRect(wv.x+iz,wv.y+iz,wv.width-2*iz,wv.height-2*iz);
 
         this._frameCount++;
-        if (time - this._lastPerfTime >= 500) {
-            const fps = ((this._frameCount / (time - this._lastPerfTime)) * 1000).toFixed(1);
-            this._updateHUD(this.planetList.length, fps);
-            this._lastPerfTime = time;
-            this._frameCount   = 0;
+        if(time-this._lastPerfTime>=500){
+            const fps=((this._frameCount/(time-this._lastPerfTime))*1000).toFixed(1);
+            this._updateHUD(this.planetList.length,this.debrisList.length,fps);
+            this._lastPerfTime=time; this._frameCount=0;
         }
     }
 
-    // ── Spatial hash ─────────────────────────────────────────────────────────
-    _cellKey(gx, gy) { return ((gx & 0xffff) | ((gy & 0xffff) << 16)) >>> 0; }
-
-    _buildGravGrid(bodies) {
-        this._gravGrid.clear();
-        const cs = PHY.GRAV_CELL;
-        for (const b of bodies) {
-            const k = this._cellKey(Math.floor(b.x / cs), Math.floor(b.y / cs));
-            if (!this._gravGrid.has(k)) this._gravGrid.set(k, []);
-            this._gravGrid.get(k).push(b);
+    _updateMenuInfoDisplays(p,isStar){
+        const g=surfaceGravity(p);
+        const suffix=isStar?'star':'planet';
+        const gEl=document.getElementById(`${suffix}-grav-val`);
+        const gBar=document.getElementById(`${suffix}-grav-bar`);
+        const tBar=document.getElementById(`${suffix}-temp-bar`);
+        if(gEl)gEl.textContent=formatGravity(g);
+        if(gBar)gBar.style.width=(gravBarFraction(g)*100).toFixed(1)+'%';
+        if(tBar){
+            tBar.style.width=(tempBarFraction(p.temperature)*100).toFixed(1)+'%';
+            tBar.style.background=tempColor(p.temperature);
         }
     }
 
-    _buildCollGrid(bodies) {
-        this._collGrid.clear();
-        const cs = PHY.GRID_CELL;
-        for (const b of bodies) {
-            const k = this._cellKey(Math.floor(b.x / cs), Math.floor(b.y / cs));
-            if (!this._collGrid.has(k)) this._collGrid.set(k, []);
+    // ── Gravity — true infinite inverse-square, proportional to mass ──────────
+    _applyGravityInfinite(bodies) {
+        const G=PHY.G, eps2=PHY.SOFT*PHY.SOFT, n=bodies.length;
+        for(let i=0;i<n;i++){
+            const a=bodies[i];
+            for(let j=i+1;j<n;j++){
+                const b=bodies[j];
+                const dx=b.x-a.x, dy=b.y-a.y, d2=dx*dx+dy*dy;
+                const inv=G/Math.pow(d2+eps2,1.5);
+                // Force magnitude ∝ G * mA * mB / r²
+                // Acceleration on A = G * mB / r² (mass of B determines pull strength on A)
+                a.ax+=inv*b.mass*dx; a.ay+=inv*b.mass*dy;
+                b.ax-=inv*a.mass*dx; b.ay-=inv*a.mass*dy;
+            }
+        }
+    }
+
+    // ── Temperature system ────────────────────────────────────────────────────
+    _updateTemperatures(dt) {
+        const stars=this.planetList.filter(p=>p.isStar);
+        const planets=this.planetList.filter(p=>!p.isStar);
+
+        // Update star temperature (stars keep high temp)
+        for(const star of stars){
+            const target=PHY.STAR_BASE_TEMP+(star.mass/5000)*200;
+            star.temperature+=(target-star.temperature)*Math.min(1,dt*0.5);
+        }
+
+        // Update planet temperature based on proximity to stars
+        for(const planet of planets){
+            let targetTemp=PHY.PLANET_SPACE_TEMP;
+            for(const star of stars){
+                const dx=planet.x-star.x, dy=planet.y-star.y;
+                const dist=Math.sqrt(dx*dx+dy*dy)||1;
+                // Heat contribution: inversely proportional to distance²
+                // Stars contribute heat proportional to their temperature / dist²
+                const heatAtDist=star.temperature*star.radius*star.radius/(dist*dist);
+                targetTemp=Math.max(targetTemp,heatAtDist);
+            }
+            // Clamp to reasonable range
+            targetTemp=Math.max(PHY.PLANET_SPACE_TEMP,Math.min(PHY.STAR_BASE_TEMP*1.5,targetTemp));
+            // Smooth toward target
+            const rate=PHY.TEMP_CHANGE_RATE;
+            if(planet.temperature<targetTemp) planet.temperature=Math.min(targetTemp,planet.temperature+rate*dt);
+            else                              planet.temperature=Math.max(targetTemp,planet.temperature-rate*dt*0.3);
+            planet.updateTypeFromTemp();
+        }
+
+        // Debris picks up temperature too (simplified)
+        for(const d of this.debrisList){
+            let targetTemp=PHY.PLANET_SPACE_TEMP;
+            for(const star of stars){
+                const dx=d.x-star.x,dy=d.y-star.y,dist=Math.sqrt(dx*dx+dy*dy)||1;
+                targetTemp=Math.max(targetTemp,star.temperature*star.radius*star.radius/(dist*dist));
+            }
+            d.temperature=Math.max(PHY.PLANET_SPACE_TEMP,Math.min(PHY.STAR_BASE_TEMP,targetTemp));
+        }
+    }
+
+    // ── Spatial hash (collision only) ─────────────────────────────────────────
+    _cellKey(gx,gy){return((gx&0xffff)|((gy&0xffff)<<16))>>>0;}
+    _buildCollGrid(bodies){
+        this._collGrid.clear(); const cs=PHY.GRID_CELL;
+        for(const b of bodies){
+            const k=this._cellKey(Math.floor(b.x/cs),Math.floor(b.y/cs));
+            if(!this._collGrid.has(k))this._collGrid.set(k,[]);
             this._collGrid.get(k).push(b);
         }
     }
-
-    // PERF: reusable scratch arrays avoid per-call heap allocation
-    _getGravNeighbors(b) {
-        const out = this._gravScratch;
-        out.length = 0;
-        const cs  = PHY.GRAV_CELL;
-        const gx  = Math.floor(b.x / cs);
-        const gy  = Math.floor(b.y / cs);
-        for (let dx = -1; dx <= 1; dx++)
-            for (let dy = -1; dy <= 1; dy++) {
-                const cell = this._gravGrid.get(this._cellKey(gx+dx, gy+dy));
-                if (cell) for (const nb of cell) out.push(nb);
-            }
-        return out;
-    }
-
-    _getCollNeighbors(b) {
-        const out = this._collScratch;
-        out.length = 0;
-        const cs  = PHY.GRID_CELL;
-        const gx  = Math.floor(b.x / cs);
-        const gy  = Math.floor(b.y / cs);
-        for (let dx = -1; dx <= 1; dx++)
-            for (let dy = -1; dy <= 1; dy++) {
-                const cell = this._collGrid.get(this._cellKey(gx+dx, gy+dy));
-                if (cell) for (const nb of cell) out.push(nb);
-            }
-        return out;
-    }
-
-    // ── Gravity ───────────────────────────────────────────────────────────────
-    _applyGravity(bodies) {
-        const G        = PHY.G;
-        const eps2     = PHY.SOFT * PHY.SOFT;
-        const baseD    = PHY.MAX_GRAV_D;
-        const refMass  = PHY.GRAV_REF_MASS;
-        const rangeMax = PHY.GRAV_RANGE_MAX;
-        // PERF: integer pair key — no string allocation each frame
-        const done = new Set();
-
-        for (const a of bodies) {
-            for (const b of this._getGravNeighbors(a)) {
-                if (b === a) continue;
-                const lo = a.planetId < b.planetId ? a.planetId : b.planetId;
-                const hi = a.planetId < b.planetId ? b.planetId : a.planetId;
-                // Pack two IDs into one integer; works as long as IDs stay < 65535
-                const id = (lo << 16) | hi;
-                if (done.has(id)) continue;
-                done.add(id);
-
-                const dx = b.x - a.x, dy = b.y - a.y;
-                const d2 = dx*dx + dy*dy;
-
-                const scaleA = Math.min(rangeMax, Math.sqrt(a.mass / refMass));
-                const scaleB = Math.min(rangeMax, Math.sqrt(b.mass / refMass));
-                const reach  = baseD * Math.max(scaleA, scaleB);
-                if (d2 > reach * reach) continue;
-
-                const inv = G / Math.pow(d2 + eps2, 1.5);
-                a.ax += inv * b.mass * dx;  a.ay += inv * b.mass * dy;
-                b.ax -= inv * a.mass * dx;  b.ay -= inv * a.mass * dy;
-            }
+    _getCollNeighbors(b){
+        const out=this._collScratch; out.length=0;
+        const cs=PHY.GRID_CELL,gx=Math.floor(b.x/cs),gy=Math.floor(b.y/cs);
+        for(let dx=-1;dx<=1;dx++)for(let dy=-1;dy<=1;dy++){
+            const cell=this._collGrid.get(this._cellKey(gx+dx,gy+dy));
+            if(cell)for(const nb of cell)out.push(nb);
         }
+        return out;
     }
 
     // ── Collisions ────────────────────────────────────────────────────────────
     _handleCollisions() {
-        const bodies = this.planetList;
-        for (const b of bodies) b.mergedThisFrame = false;
+        const all=this.allBodies;
+        for(const b of all) b.mergedThisFrame=false;
 
-        const toRemove         = [];
-        const toAdd            = [];
-        const done             = new Set();
-        const activeGrindPairs = new Set();
+        const toRemovePlanets=[],toRemoveDebris=[],toAdd=[],done=new Set(),activeGrind=new Set();
 
-        for (const a of bodies) {
-            if (a.mergedThisFrame || a.isDragged) continue;
+        for(const a of all){
+            if(a.mergedThisFrame||a.isDragged)continue;
+            for(const b of this._getCollNeighbors(a)){
+                if(b===a||b.mergedThisFrame||b.isDragged)continue;
+                const lo=Math.min(a.planetId,b.planetId),hi=Math.max(a.planetId,b.planetId);
+                const id=(lo<<16)|hi;
+                if(done.has(id))continue; done.add(id);
+                const dx=b.x-a.x,dy=b.y-a.y,dist=Math.sqrt(dx*dx+dy*dy)||0.001;
+                const sumR=a.radius+b.radius;
+                if(dist>=sumR)continue;
 
-            for (const b of this._getCollNeighbors(a)) {
-                if (b === a || b.mergedThisFrame || b.isDragged) continue;
-
-                const lo = a.planetId < b.planetId ? a.planetId : b.planetId;
-                const hi = a.planetId < b.planetId ? b.planetId : a.planetId;
-                // PERF: integer pair key
-                const id = (lo << 16) | hi;
-                if (done.has(id)) continue;
-                done.add(id);
-
-                const dx   = b.x - a.x, dy = b.y - a.y;
-                const dist = Math.sqrt(dx*dx + dy*dy) || 0.001;
-                const sumR = a.radius + b.radius;
-                if (dist >= sumR) continue;
-
-                const ratio = dist / sumR;
-
-                if (ratio < PHY.MERGE_FRAC) {
-                    this._rocheContacts.delete(id);
-                    const mT  = a.mass + b.mass;
-                    const nvx = (a.vx * a.mass + b.vx * b.mass) / mT;
-                    const nvy = (a.vy * a.mass + b.vy * b.mass) / mT;
-                    const [big, sml] = a.mass >= b.mass ? [a, b] : [b, a];
-                    big.radius = Math.sqrt(big.radius ** 2 + sml.radius ** 2);
-                    big.mass   = mT;
-                    big.vx = nvx;  big.vy = nvy;
-                    big.color = this._blendColors(big.color, sml.color, sml.mass / mT);
-                    big.refreshSprite();
-                    big.mergedThisFrame = sml.mergedThisFrame = true;
-                    toRemove.push(sml);
-                    this._vfxMerge((a.x + b.x) * 0.5, (a.y + b.y) * 0.5, big.radius);
-                    if (this.selectedPlanet === sml) this.selectPlanet(big);
+                // STAR vs STAR → always explode (supernova)
+                if(a.isStar&&b.isStar){
+                    this._triggerSupernova((a.x+b.x)*0.5,(a.y+b.y)*0.5,Math.max(a.radius,b.radius)*3);
+                    a.mergedThisFrame=b.mergedThisFrame=true;
+                    toRemovePlanets.push(a);toRemovePlanets.push(b);
                     continue;
                 }
 
-                const [big, sml] = a.mass >= b.mass ? [a, b] : [b, a];
-                const relVx  = sml.vx - big.vx, relVy = sml.vy - big.vy;
-                const speed  = Math.sqrt(relVx * relVx + relVy * relVy);
-
-                if (sml.radius <= 5) {
-                    this._bounce(a, b, dx, dy, dist, sumR);
+                // STAR eats planet or debris → always explode planet on touch
+                if(a.isStar||b.isStar){
+                    const[star,other]=a.isStar?[a,b]:[b,a];
+                    // Planet/debris touching star → explode (absorb)
+                    const mT=star.mass+other.mass*0.25;
+                    star.radius=Math.sqrt(star.radius**2+(other.radius*0.18)**2);
+                    star.mass=mT; star.refreshSprite();
+                    other.mergedThisFrame=true;
+                    if(other.isDebris)toRemoveDebris.push(other);
+                    else              toRemovePlanets.push(other);
+                    this._vfxMerge((a.x+b.x)*0.5,(a.y+b.y)*0.5,other.radius);
                     continue;
                 }
 
-                activeGrindPairs.add(id);
-                const grindCount = (this._rocheContacts.get(id) || 0) + 1;
-                this._rocheContacts.set(id, grindCount);
+                // DEBRIS hits heavier body → explode debris, add mass to body
+                if(a.isDebris||b.isDebris){
+                    const[deb,body]=a.isDebris?[a,b]:[b,a];
+                    if(body.isDebris){
+                        // Debris vs debris — merge smaller into larger
+                        const[big,sml]=a.mass>=b.mass?[a,b]:[b,a];
+                        const mT=big.mass+sml.mass;
+                        big.vx=(big.vx*big.mass+sml.vx*sml.mass)/mT;
+                        big.vy=(big.vy*big.mass+sml.vy*sml.mass)/mT;
+                        big.mass=mT; big.radius=Math.max(big.radius,Math.sqrt(big.radius**2+sml.radius**2)*0.8);
+                        big.mergedThisFrame=sml.mergedThisFrame=true;
+                        toRemoveDebris.push(sml);
+                    } else {
+                        // Debris hits planet → explode debris, add its mass to planet
+                        const mT=body.mass+deb.mass;
+                        body.vx=(body.vx*body.mass+deb.vx*deb.mass)/mT;
+                        body.vy=(body.vy*body.mass+deb.vy*deb.mass)/mT;
+                        body.mass=mT;
+                        body.radius=Math.sqrt(body.radius**2+(deb.radius*0.5)**2);
+                        body.refreshSprite();
+                        deb.mergedThisFrame=true; toRemoveDebris.push(deb);
+                        this._vfxMerge(deb.x,deb.y,deb.radius*2);
+                    }
+                    continue;
+                }
 
-                const shouldDisrupt =
-                    speed      >= PHY.ROCHE_FAST_THRESH ||
-                    grindCount >= PHY.ROCHE_GRIND_FRAMES;
-
-                if (shouldDisrupt) {
+                // PLANET vs PLANET
+                const ratio=dist/sumR;
+                if(ratio<PHY.MERGE_FRAC){
                     this._rocheContacts.delete(id);
-                    big.mergedThisFrame = sml.mergedThisFrame = true;
-                    toRemove.push(sml);
-
-                    const pSysX = big.mass * big.vx + sml.mass * sml.vx;
-                    const pSysY = big.mass * big.vy + sml.mass * sml.vy;
-
-                    const mAbs    = sml.mass * 0.15;
-                    const mEj     = sml.mass * 0.85;
-                    const mBigNew = big.mass + mAbs;
-
-                    big.vx = (big.vx * big.mass + sml.vx * mAbs) / mBigNew;
-                    big.vy = (big.vy * big.mass + sml.vy * mAbs) / mBigNew;
-                    big.mass   = mBigNew;
-                    big.radius = Math.sqrt(big.radius ** 2 + (sml.radius * 0.38) ** 2);
+                    const mT=a.mass+b.mass;
+                    const nvx=(a.vx*a.mass+b.vx*b.mass)/mT,nvy=(a.vy*a.mass+b.vy*b.mass)/mT;
+                    const[big,sml]=a.mass>=b.mass?[a,b]:[b,a];
+                    big.radius=Math.sqrt(big.radius**2+sml.radius**2);
+                    big.mass=mT; big.vx=nvx; big.vy=nvy;
+                    big.color=this._blendColors(big.color,sml.color,sml.mass/mT);
                     big.refreshSprite();
+                    big.mergedThisFrame=sml.mergedThisFrame=true;
+                    toRemovePlanets.push(sml);
+                    this._vfxMerge((a.x+b.x)*0.5,(a.y+b.y)*0.5,big.radius);
+                    if(this.selectedPlanet===sml)this.selectPlanet(big);
+                    continue;
+                }
 
-                    const debrisPX = pSysX - big.mass * big.vx;
-                    const debrisPY = pSysY - big.mass * big.vy;
+                const[big,sml]=a.mass>=b.mass?[a,b]:[b,a];
+                const relVx=sml.vx-big.vx,relVy=sml.vy-big.vy;
+                const speed=Math.sqrt(relVx*relVx+relVy*relVy);
+                if(sml.radius<=5){this._bounce(a,b,dx,dy,dist,sumR);continue;}
 
-                    const frags = this._spawnDebris(
-                        sml.x, sml.y, sml.vx, sml.vy,
-                        mEj, sml.radius, sml.color,
-                        dx / dist, dy / dist, speed,
-                        debrisPX, debrisPY
-                    );
-                    for (const f of frags) toAdd.push(f);
-                    this._vfxRoche((a.x + b.x) * 0.5, (a.y + b.y) * 0.5, sml.radius);
-                    if (this.selectedPlanet === sml) this.selectPlanet(big);
+                activeGrind.add(id);
+                const grind=(this._rocheContacts.get(id)||0)+1;
+                this._rocheContacts.set(id,grind);
+
+                if(speed>=PHY.ROCHE_FAST_THRESH||grind>=PHY.ROCHE_GRIND_FRAMES){
+                    this._rocheContacts.delete(id);
+                    big.mergedThisFrame=sml.mergedThisFrame=true;
+                    toRemovePlanets.push(sml);
+                    const mAbs=sml.mass*0.15,mEj=sml.mass*0.85,mBigNew=big.mass+mAbs;
+                    big.vx=(big.vx*big.mass+sml.vx*mAbs)/mBigNew;
+                    big.vy=(big.vy*big.mass+sml.vy*mAbs)/mBigNew;
+                    big.mass=mBigNew; big.radius=Math.sqrt(big.radius**2+(sml.radius*0.38)**2);
+                    big.refreshSprite();
+                    const frags=this._spawnDebrisFrags(sml.x,sml.y,sml.vx,sml.vy,mEj,sml.radius,sml.color,dx/dist,dy/dist,speed);
+                    for(const f of frags)toAdd.push(f);
+                    this._vfxRoche((a.x+b.x)*0.5,(a.y+b.y)*0.5,sml.radius);
+                    if(this.selectedPlanet===sml)this.selectPlanet(big);
                 } else {
-                    this._depenetrate(a, b, dx, dy, dist, sumR);
+                    this._depenetrate(a,b,dx,dy,dist,sumR);
                 }
             }
         }
 
-        for (const [pairId] of this._rocheContacts) {
-            if (!activeGrindPairs.has(pairId)) this._rocheContacts.delete(pairId);
-        }
-
-        for (const dead of toRemove) this._removePlanet(dead);
-        for (const opts of toAdd)    this._spawnPlanet(opts);
+        for(const[pid]of this._rocheContacts)if(!activeGrind.has(pid))this._rocheContacts.delete(pid);
+        for(const dead of toRemovePlanets)this._removePlanet(dead);
+        for(const dead of toRemoveDebris) this._removeDebris(dead);
+        for(const opts of toAdd)          this._spawnDebris(opts);
     }
 
-    _depenetrate(a, b, dx, dy, dist, sumR) {
-        const nx = dx / dist, ny = dy / dist;
-        const mT = a.mass + b.mass;
-        const ov = sumR - dist;
-        a.x -= nx * ov * (b.mass / mT);  a.y -= ny * ov * (b.mass / mT);
-        b.x += nx * ov * (a.mass / mT);  b.y += ny * ov * (a.mass / mT);
-        a._sync(); b._sync();
-    }
-
-    _bounce(a, b, dx, dy, dist, sumR) {
-        const nx = dx / dist, ny = dy / dist;
-        const mT = a.mass + b.mass;
-        const ov = sumR - dist;
-        a.x -= nx * ov * (b.mass / mT);  a.y -= ny * ov * (b.mass / mT);
-        b.x += nx * ov * (a.mass / mT);  b.y += ny * ov * (a.mass / mT);
-        a._sync(); b._sync();
-
-        const rvx = b.vx - a.vx, rvy = b.vy - a.vy;
-        const vN  = rvx * nx + rvy * ny;
-        if (vN >= 0) return;
-
-        const invM = 1 / a.mass + 1 / b.mass;
-        const j    = -(1 + PHY.BOUNCE_E) * vN / invM;
-        a.vx -= (j / a.mass) * nx;  a.vy -= (j / a.mass) * ny;
-        b.vx += (j / b.mass) * nx;  b.vy += (j / b.mass) * ny;
-
-        const rvxP = b.vx - a.vx, rvyP = b.vy - a.vy;
-        const vNP  = rvxP * nx + rvyP * ny;
-        if (vNP < PHY.MIN_SEP_SPEED) {
-            const jC = (PHY.MIN_SEP_SPEED - vNP) / invM;
-            a.vx -= (jC / a.mass) * nx;  a.vy -= (jC / a.mass) * ny;
-            b.vx += (jC / b.mass) * nx;  b.vy += (jC / b.mass) * ny;
+    // ── Debris promotion ──────────────────────────────────────────────────────
+    _promoteDebris() {
+        const toPromote=[];
+        for(const d of this.debrisList){
+            if(d.radius>=PHY.DEBRIS_PROMOTE_RADIUS&&d.mass>=PHY.DEBRIS_PROMOTE_MASS) toPromote.push(d);
         }
-    }
-
-    // ── Debris ────────────────────────────────────────────────────────────────
-    _spawnDebris(x, y, pvx, pvy, totalMass, parentR, color, nx, ny, relSpeed,
-                 budgetPX, budgetPY) {
-        const slots = PHY.MAX_BODIES - this.planetList.length;
-        // PERF: cap fragment count more aggressively for large parents
-        const parentScale = Math.min(1, parentR / 40);
-        const fragCap  = Math.max(4, Math.ceil(parentR * 1.4 * (1 - parentScale * 0.5)));
-        const maxF  = Math.min(PHY.MAX_FRAGS, slots, fragCap);
-        if (maxF < 2) return [];
-
-        const tx = -ny, ty = nx;
-        let mLeft = totalMass;
-
-        const masses = [];
-        for (let i = 0; i < maxF; i++) {
-            const last = i === maxF - 1;
-            let fMass;
-            if (last) {
-                fMass = mLeft;
-            } else {
-                const mFrac = 0.04 + Math.random() * 0.22;
-                fMass = Math.min(mLeft * mFrac,
-                                 mLeft - PHY.DEBRIS_MASS_MIN * (maxF - i - 1));
-                fMass = Math.max(PHY.DEBRIS_MASS_MIN, fMass);
-            }
-            masses.push(fMass);
-            mLeft -= fMass;
-            if (mLeft < PHY.DEBRIS_MASS_MIN && i < maxF - 2) {
-                masses[masses.length - 1] += mLeft;
-                mLeft = 0;
-                break;
-            }
-        }
-
-        const rawFrags = [];
-        const ejBase   = relSpeed * 0.12 + 6;
-        for (let i = 0; i < masses.length; i++) {
-            const fMass    = masses[i];
-            const areaFrac = fMass / totalMass;
-            const fRad     = Math.max(1.2, parentR * Math.sqrt(areaFrac));
-            const tSpread  = (Math.random() - 0.5) * 2;
-            const rSpread  = (Math.random() - 0.5) * 0.8;
-            rawFrags.push({
-                x:  x + (Math.random() - 0.5) * parentR * 0.7,
-                y:  y + (Math.random() - 0.5) * parentR * 0.7,
-                vx: pvx + tx * ejBase * tSpread + nx * ejBase * rSpread + (Math.random() - 0.5) * 4,
-                vy: pvy + ty * ejBase * tSpread + ny * ejBase * rSpread + (Math.random() - 0.5) * 4,
-                mass: fMass, radius: fRad,
-                color: this._tintColor(color, 0.85 + Math.random() * 0.3),
-                isDebris: true
+        for(const d of toPromote){
+            if(this.planetList.length>=PHY.MAX_BODIES)break;
+            const idx=this.debrisList.indexOf(d);
+            if(idx===-1)continue;
+            this.debrisList.splice(idx,1);
+            const newP=new Planet(this,d.x,d.y,{
+                radius:d.radius,mass:d.mass,vx:d.vx,vy:d.vy,
+                color:d.color,isDebris:false,isStar:false,
+                texSeed:(Math.random()*0x7fffffff)|0,
+                temperature:d.temperature,
             });
+            this.planetList.push(newP);
+            this._vfxBirth(d.x,d.y,d.radius);
+            d.destroy();
         }
+    }
 
-        if (budgetPX !== undefined && budgetPY !== undefined) {
-            let actualPX = 0, actualPY = 0;
-            for (const f of rawFrags) { actualPX += f.mass * f.vx; actualPY += f.mass * f.vy; }
-            const dvx = (budgetPX - actualPX) / totalMass;
-            const dvy = (budgetPY - actualPY) / totalMass;
-            for (const f of rawFrags) { f.vx += dvx; f.vy += dvy; }
+    // ── Physics primitives ────────────────────────────────────────────────────
+    _depenetrate(a,b,dx,dy,dist,sumR){
+        const nx=dx/dist,ny=dy/dist,mT=a.mass+b.mass,ov=sumR-dist;
+        a.x-=nx*ov*(b.mass/mT);a.y-=ny*ov*(b.mass/mT);
+        b.x+=nx*ov*(a.mass/mT);b.y+=ny*ov*(a.mass/mT);
+        a._sync();b._sync();
+    }
+    _bounce(a,b,dx,dy,dist,sumR){
+        const nx=dx/dist,ny=dy/dist,mT=a.mass+b.mass,ov=sumR-dist;
+        a.x-=nx*ov*(b.mass/mT);a.y-=ny*ov*(b.mass/mT);
+        b.x+=nx*ov*(a.mass/mT);b.y+=ny*ov*(a.mass/mT);
+        a._sync();b._sync();
+        const rvx=b.vx-a.vx,rvy=b.vy-a.vy,vN=rvx*nx+rvy*ny;
+        if(vN>=0)return;
+        const invM=1/a.mass+1/b.mass,j=-(1+PHY.BOUNCE_E)*vN/invM;
+        a.vx-=(j/a.mass)*nx;a.vy-=(j/a.mass)*ny;
+        b.vx+=(j/b.mass)*nx;b.vy+=(j/b.mass)*ny;
+        const vNP=(b.vx-a.vx)*nx+(b.vy-a.vy)*ny;
+        if(vNP<PHY.MIN_SEP_SPEED){
+            const jC=(PHY.MIN_SEP_SPEED-vNP)/invM;
+            a.vx-=(jC/a.mass)*nx;a.vy-=(jC/a.mass)*ny;
+            b.vx+=(jC/b.mass)*nx;b.vy+=(jC/b.mass)*ny;
         }
+    }
 
+    // ── Debris spawning ───────────────────────────────────────────────────────
+    _spawnDebrisFrags(x,y,pvx,pvy,totalMass,parentR,color,nx,ny,relSpeed){
+        const cap=PHY.MAX_DEBRIS-this.debrisList.length;
+        const fragCap=Math.max(3,Math.ceil(parentR*1.2));
+        const maxF=Math.min(PHY.MAX_FRAGS,cap,fragCap);
+        if(maxF<1)return[];
+        const tx=-ny,ty=nx,ejBase=relSpeed*0.12+6;
+        let mLeft=totalMass;
+        const rawFrags=[];
+        for(let i=0;i<maxF;i++){
+            const last=i===maxF-1;
+            let fMass=last?mLeft:Math.max(PHY.DEBRIS_MASS_MIN,Math.min(mLeft*0.25,mLeft-PHY.DEBRIS_MASS_MIN*(maxF-i-1)));
+            fMass=Math.min(fMass,mLeft);mLeft-=fMass;if(mLeft<0)mLeft=0;
+            const areaFrac=fMass/totalMass,fRad=Math.max(1.2,parentR*Math.sqrt(areaFrac));
+            const ts=(Math.random()-0.5)*2,rs=(Math.random()-0.5)*0.8;
+            rawFrags.push({x:x+(Math.random()-0.5)*parentR*0.7,y:y+(Math.random()-0.5)*parentR*0.7,
+                vx:pvx+tx*ejBase*ts+nx*ejBase*rs+(Math.random()-0.5)*4,
+                vy:pvy+ty*ejBase*ts+ny*ejBase*rs+(Math.random()-0.5)*4,
+                mass:fMass,radius:fRad,color:this._tintColor(color,0.85+Math.random()*0.3),isDebris:true});
+            if(mLeft<=0)break;
+        }
         return rawFrags;
     }
-
-    // ── Planet list ───────────────────────────────────────────────────────────
-    _spawnPlanet(opts) {
-        if (this.planetList.length >= PHY.MAX_BODIES) return null;
-        const p = new Planet(this, opts.x, opts.y, opts);
-        this.planetList.push(p);
+    _spawnDebris(opts){
+        if(this.debrisList.length>=PHY.MAX_DEBRIS)return null;
+        const p=new Planet(this,opts.x,opts.y,opts);
+        this.debrisList.push(p);
         return p;
     }
 
-    createPlanetAtPosition(x, y, opts = {}) { return this._spawnPlanet({ x, y, ...opts }); }
-
-    addPlanet() {
-        const cam = this.cameras.main;
-        const wv  = cam.worldView;
-        const pad = 80 / cam.zoom;
-        this.createPlanetAtPosition(
-            Phaser.Math.FloatBetween(wv.x + pad, wv.x + wv.width  - pad),
-            Phaser.Math.FloatBetween(wv.y + pad, wv.y + wv.height - pad));
-        this.scheduleSave();
-    }
-
-    addMoon(parent) {
-        if (!parent) return null;
-        const moonRadiusFrac  = Phaser.Math.FloatBetween(0.25, 0.45);
-        const moonRadius      = Math.max(4, parent.radius * moonRadiusFrac);
-        const moonMass        = Math.max(4, moonRadius * moonRadius * 0.13);
-        const orbitDist = (parent.radius + moonRadius) * 2.5 + 10;
-        const angle     = Phaser.Math.FloatBetween(0, Math.PI * 2);
-        const mx        = parent.x + Math.cos(angle) * orbitDist;
-        const my        = parent.y + Math.sin(angle) * orbitDist;
-        const orbitalSpeed = Math.sqrt(PHY.G * parent.mass / orbitDist);
-        const moonVx = parent.vx + (-Math.sin(angle)) * orbitalSpeed;
-        const moonVy = parent.vy + ( Math.cos(angle)) * orbitalSpeed;
-        const moonColor = this._tintColor(parent.color, Phaser.Math.FloatBetween(0.55, 0.80));
-        const moon = this.createPlanetAtPosition(mx, my, {
-            radius: moonRadius, mass: moonMass,
-            vx: moonVx, vy: moonVy, color: moonColor,
+    // ── SUPERNOVA ─────────────────────────────────────────────────────────────
+    _triggerSupernova(cx,cy,blastRadius){
+        if(this._supernovaActive)return;
+        this._supernovaActive=true;
+        this.cameras.main.shake(800,0.03);
+        this.cameras.main.flash(400,255,160,0);
+        const toDestroy=[...this.planetList.filter(p=>!p.isStar&&!p.mergedThisFrame)];
+        for(const p of toDestroy)p.mergedThisFrame=true;
+        const g=this.add.graphics().setDepth(50);
+        let t=0;const dur=1800;
+        const ev=this.time.addEvent({delay:16,repeat:Math.ceil(dur/16),callback:()=>{
+            t+=16;const p=t/dur;g.clear();
+            if(p<0.15){g.fillStyle(0xffffff,(1-p/0.15)*0.9);g.fillCircle(cx,cy,blastRadius*(0.3+p/0.15*2));}
+            const r1=blastRadius*(0.5+p*6);g.lineStyle(8*(1-p),0xff8800,Math.max(0,(1-p)*0.7));g.strokeCircle(cx,cy,r1);
+            if(p>0.1){const r2=blastRadius*(0.5+(p-0.1)*5.5);g.lineStyle(4*(1-(p-0.1)/0.9),0xffdd44,Math.max(0,(1-(p-0.1)/0.9)*0.5));g.strokeCircle(cx,cy,r2);}
+            g.fillStyle(0xff4400,Math.max(0,(1-p)*0.12));g.fillCircle(cx,cy,blastRadius*(1+p*4));
+            if(p>=1){g.destroy();ev.remove();this._supernovaActive=false;}
+        }});
+        this.time.delayedCall(300,()=>{
+            for(const p of toDestroy){const i=this.planetList.indexOf(p);if(i!==-1){this.planetList.splice(i,1);p.destroy();}}
+            const sToRm=this.planetList.filter(p=>p.mergedThisFrame&&p.isStar);
+            for(const s of sToRm){const i=this.planetList.indexOf(s);if(i!==-1){this.planetList.splice(i,1);s.destroy();}}
+            this.deselectPlanet();this.scheduleSave();
         });
+    }
+
+    // ── Body management ───────────────────────────────────────────────────────
+    _spawnPlanet(opts){
+        if(this.planetList.length>=PHY.MAX_BODIES)return null;
+        const p=new Planet(this,opts.x,opts.y,opts);
+        this.planetList.push(p);return p;
+    }
+    createPlanetAtPosition(x,y,opts={}){return this._spawnPlanet({x,y,...opts});}
+
+    _removePlanet(p){
+        const i=this.planetList.indexOf(p);if(i!==-1)this.planetList.splice(i,1);
+        p.destroy();if(this.selectedPlanet===p)this.deselectPlanet();
+    }
+    _removeDebris(d){
+        const i=this.debrisList.indexOf(d);if(i!==-1)this.debrisList.splice(i,1);
+        d.destroy();
+    }
+
+    addPlanet(){
+        const cam=this.cameras.main,wv=cam.worldView,pad=80/cam.zoom;
+        this.createPlanetAtPosition(
+            Phaser.Math.FloatBetween(wv.x+pad,wv.x+wv.width-pad),
+            Phaser.Math.FloatBetween(wv.y+pad,wv.y+wv.height-pad));
         this.scheduleSave();
-        return moon;
     }
-
-    _removePlanet(p) {
-        const i = this.planetList.indexOf(p);
-        if (i !== -1) this.planetList.splice(i, 1);
-        p.destroy();
-        if (this.selectedPlanet === p) this.deselectPlanet();
-    }
-
-    clearAllPlanets() {
-        for (const p of this.planetList) p.destroy();
-        this.planetList = [];
-        this._rocheContacts.clear();
-        this.debrisPool.releaseAll();
-        this.deselectPlanet();
+    addStar(){
+        const cam=this.cameras.main,wv=cam.worldView,pad=120/cam.zoom;
+        const radius=Phaser.Math.FloatBetween(PHY.STAR_MIN_RADIUS,PHY.STAR_MAX_RADIUS);
+        this.createPlanetAtPosition(
+            Phaser.Math.FloatBetween(wv.x+pad,wv.x+wv.width-pad),
+            Phaser.Math.FloatBetween(wv.y+pad,wv.y+wv.height-pad),
+            {radius,mass:radius*radius*1.5,isStar:true});
         this.scheduleSave();
     }
+    addMoon(parent){
+        if(!parent)return null;
+        const moonR=Math.max(4,parent.radius*Phaser.Math.FloatBetween(0.25,0.45));
+        const moonM=Math.max(4,moonR*moonR*0.13);
+        const od=(parent.radius+moonR)*2.5+10;
+        const ang=Phaser.Math.FloatBetween(0,Math.PI*2);
+        const os=Math.sqrt(PHY.G*parent.mass/od);
+        const moon=this.createPlanetAtPosition(parent.x+Math.cos(ang)*od,parent.y+Math.sin(ang)*od,{
+            radius:moonR,mass:moonM,
+            vx:parent.vx+(-Math.sin(ang))*os,vy:parent.vy+(Math.cos(ang))*os,
+            color:this._tintColor(parent.color,Phaser.Math.FloatBetween(0.55,0.80)),
+        });
+        this.scheduleSave();return moon;
+    }
+    addOrbitingPlanet(star){
+        if(!star)return null;
+        const pR=Phaser.Math.FloatBetween(8,28),pM=pR*pR*0.13;
+        const od=Phaser.Math.FloatBetween(star.radius*2.5+30,star.radius*6+200);
+        const ang=Phaser.Math.FloatBetween(0,Math.PI*2);
+        const os=Math.sqrt(PHY.G*star.mass/od);
+        const pl=this.createPlanetAtPosition(star.x+Math.cos(ang)*od,star.y+Math.sin(ang)*od,{
+            radius:pR,mass:pM,
+            vx:star.vx+(-Math.sin(ang))*os,vy:star.vy+(Math.cos(ang))*os,
+            color:Phaser.Utils.Array.GetRandom(this.planetColours),
+        });
+        this.scheduleSave();return pl;
+    }
+    addSolarSystem(star){
+        if(!star)return;
+        const n=Phaser.Math.Between(6,9),minD=star.radius*2.8,maxD=star.radius*7+500;
+        const spacing=(maxD-minD)/n;
+        for(let i=0;i<n;i++){
+            const od=minD+spacing*i+Phaser.Math.FloatBetween(0,spacing*0.5);
+            const ang=Phaser.Math.FloatBetween(0,Math.PI*2);
+            const os=Math.sqrt(PHY.G*star.mass/od);
+            const sc=0.4+(i/n)*0.6;
+            const pR=Math.max(6,Phaser.Math.FloatBetween(6,22)*sc+(i>n*0.55?12:0));
+            this.createPlanetAtPosition(star.x+Math.cos(ang)*od,star.y+Math.sin(ang)*od,{
+                radius:pR,mass:pR*pR*0.13,
+                vx:star.vx+(-Math.sin(ang))*os,vy:star.vy+(Math.cos(ang))*os,
+                color:Phaser.Utils.Array.GetRandom(this.planetColours),
+            });
+            if(i>=n*0.55&&Math.random()<0.5){const lp=this.planetList[this.planetList.length-1];if(lp)this.addMoon(lp);}
+        }
+        // Note: does NOT close the menu — per spec
+        this.scheduleSave();
+    }
+    addBinaryPartner(primaryStar){
+        if(!primaryStar)return null;
+        const sf=Phaser.Math.FloatBetween(0.6,1.0);
+        const cR=Phaser.Math.Clamp(primaryStar.radius*sf,PHY.STAR_MIN_RADIUS*0.5,PHY.STAR_MAX_RADIUS);
+        const cM=cR*cR*1.5;
+        const sep=(primaryStar.radius+cR)*Phaser.Math.FloatBetween(3.0,5.0);
+        const ang=Phaser.Math.FloatBetween(0,Math.PI*2);
+        const tM=primaryStar.mass+cM;
+        const rP=sep*(cM/tM),rC=sep*(primaryStar.mass/tM);
+        const pnX=primaryStar.x-Math.cos(ang)*rP,pnY=primaryStar.y-Math.sin(ang)*rP;
+        const cX=primaryStar.x+Math.cos(ang)*rC,cY=primaryStar.y+Math.sin(ang)*rC;
+        const vP=Math.sqrt(PHY.G*cM*cM/(tM*sep)),vC=Math.sqrt(PHY.G*primaryStar.mass*primaryStar.mass/(tM*sep));
+        const perpX=-Math.sin(ang),perpY=Math.cos(ang);
+        primaryStar.x=pnX;primaryStar.y=pnY;
+        primaryStar.vx+=-perpX*vP;primaryStar.vy+=-perpY*vP;primaryStar._sync();
+        const companion=this.createPlanetAtPosition(cX,cY,{
+            radius:cR,mass:cM,isStar:true,
+            vx:primaryStar.vx-(-perpX*vP)+perpX*vC,
+            vy:primaryStar.vy-(-perpY*vP)+perpY*vC,
+            texSeed:(Math.random()*0x7fffffff)|0,
+        });
+        this._vfxBirth(pnX,pnY,primaryStar.radius*0.5);
+        this._vfxBirth(cX,cY,cR*0.5);
+        this.scheduleSave();return companion;
+    }
 
-    _cleanupDebris() {
-        // PERF: process at most 20 removals per frame to smooth out GC spikes
-        // when many debris pieces expire simultaneously
-        let removed = 0;
-        const limit = 20;
-        for (let i = this.planetList.length - 1; i >= 0 && removed < limit; i--) {
-            const p = this.planetList[i];
-            if (p.isDebris && (p.lifetime <= 0 || p.mass < PHY.DEBRIS_MASS_MIN)) {
-                this.planetList.splice(i, 1);
-                p.destroy();
-                removed++;
+    clearAllPlanets(){
+        for(const p of this.planetList)p.destroy();
+        for(const d of this.debrisList)d.destroy();
+        this.planetList=[];this.debrisList=[];
+        this._rocheContacts.clear();this.debrisPool.releaseAll();
+        this.deselectPlanet();this.scheduleSave();
+    }
+    clearAllDebris(){
+        for(const d of this.debrisList)d.destroy();
+        this.debrisList=[];this.debrisPool.releaseAll();
+    }
+    removeOffscreen(){
+        const cam=this.cameras.main,wv=cam.worldView;
+        const margin=200;
+        const inView=p=>(p.x>wv.x-margin&&p.x<wv.x+wv.width+margin&&p.y>wv.y-margin&&p.y<wv.y+wv.height+margin);
+        for(let i=this.planetList.length-1;i>=0;i--){
+            const p=this.planetList[i];if(!inView(p)){this.planetList.splice(i,1);p.destroy();if(this.selectedPlanet===p)this.deselectPlanet();}
+        }
+        for(let i=this.debrisList.length-1;i>=0;i--){
+            const d=this.debrisList[i];if(!inView(d)){this.debrisList.splice(i,1);d.destroy();}
+        }
+    }
+
+    _cleanupDebris(){
+        let removed=0;
+        for(let i=this.debrisList.length-1;i>=0&&removed<30;i--){
+            const p=this.debrisList[i];
+            if(p.lifetime<=0||p.mass<PHY.DEBRIS_MASS_MIN){
+                this.debrisList.splice(i,1);p.destroy();removed++;
+            }
+        }
+        // If over cap, prune oldest (lowest lifetime)
+        if(this.debrisList.length>PHY.MAX_DEBRIS){
+            this.debrisList.sort((a,b)=>a.lifetime-b.lifetime);
+            while(this.debrisList.length>PHY.MAX_DEBRIS){
+                const d=this.debrisList.shift();d.destroy();
             }
         }
     }
 
     // ── Selection ─────────────────────────────────────────────────────────────
-    selectPlanet(planet) {
-        if (this.selectedPlanet === planet) return;
+    selectPlanet(planet){
+        if(this.selectedPlanet===planet)return;
         this.deselectPlanet();
-        this.selectedPlanet = planet;
-        this.updateSelectionRing();
+        this.selectedPlanet=planet;this.updateSelectionRing();
     }
-
-    deselectPlanet() {
-        if (!this.selectedPlanet) return;
-        this.selectionRing.clear();
-        this.hidePlanetMenu();
-        this.selectedPlanet = null;
+    deselectPlanet(){
+        if(!this.selectedPlanet)return;
+        this.selectionRing.clear();this.hidePlanetMenu();this.hideStarMenu();
+        this.selectedPlanet=null;
     }
-
-    updateSelectionRing() {
-        if (!this.selectedPlanet) return;
-        const p = this.selectedPlanet;
-        const r = p.radius + 11;
+    updateSelectionRing(){
+        if(!this.selectedPlanet)return;
+        const p=this.selectedPlanet,r=p.radius+11;
+        const col=p.isStar?0xffcc44:0x7ef7ff;
         this.selectionRing.clear();
-        this.selectionRing.lineStyle(2, 0x7ef7ff, 0.85);
-        this.selectionRing.strokeCircle(p.x, p.y, r);
-        this.selectionRing.lineStyle(1, 0x7ef7ff, 0.45);
-        for (let a = 0; a < Math.PI * 2; a += Math.PI / 6) {
-            this.selectionRing.lineBetween(
-                p.x + Math.cos(a)*(r+2), p.y + Math.sin(a)*(r+2),
-                p.x + Math.cos(a)*(r+8), p.y + Math.sin(a)*(r+8));
-        }
+        this.selectionRing.lineStyle(2,col,0.85);
+        this.selectionRing.strokeCircle(p.x,p.y,r);
+        this.selectionRing.lineStyle(1,col,0.45);
+        for(let a=0;a<Math.PI*2;a+=Math.PI/6)
+            this.selectionRing.lineBetween(p.x+Math.cos(a)*(r+2),p.y+Math.sin(a)*(r+2),p.x+Math.cos(a)*(r+8),p.y+Math.sin(a)*(r+8));
     }
 
     // ── VFX ───────────────────────────────────────────────────────────────────
-    _vfxMerge(x, y, r) {
-        if (typeof GameSettings !== 'undefined' && !GameSettings.explosions) {
-            if (typeof GameSettings !== 'undefined' && GameSettings.screenShake)
-                this.cameras.main.shake(60, 0.001);
-            return;
-        }
-        const g = this.add.graphics().setDepth(20);
-        let t = 0; const dur = 300;
-        const ev = this.time.addEvent({ delay: 16, repeat: Math.ceil(dur/16),
-            callback: () => {
-                t += 16; const p = t/dur;
-                g.clear();
-                g.fillStyle(0xffffff, (1-p)*0.75);
-                g.fillCircle(x, y, r*(0.5 + p*0.7));
-                if (p >= 1) { g.destroy(); ev.remove(); }
-            }
-        });
-        if (typeof GameSettings === 'undefined' || GameSettings.screenShake)
-            this.cameras.main.shake(100, 0.003);
+    _vfxMerge(x,y,r){
+        if(!GameSettings.explosions){if(GameSettings.screenShake)this.cameras.main.shake(60,0.001);return;}
+        const g=this.add.graphics().setDepth(20);let t=0;
+        const ev=this.time.addEvent({delay:16,repeat:19,callback:()=>{
+            t+=16;const p=t/300;g.clear();g.fillStyle(0xffffff,(1-p)*0.75);g.fillCircle(x,y,r*(0.5+p*0.7));
+            if(p>=1){g.destroy();ev.remove();}
+        }});
+        if(GameSettings.screenShake)this.cameras.main.shake(80,0.003);
     }
-
-    _vfxRoche(x, y, r) {
-        if (typeof GameSettings !== 'undefined' && !GameSettings.explosions) {
-            if (typeof GameSettings !== 'undefined' && GameSettings.screenShake)
-                this.cameras.main.shake(40, 0.001);
-            return;
-        }
-        const g = this.add.graphics().setDepth(20);
-        let t = 0; const dur = 500;
-        const ev = this.time.addEvent({ delay: 16, repeat: Math.ceil(dur/16),
-            callback: () => {
-                t += 16; const p = t/dur;
-                g.clear();
-                g.fillStyle(0xff7700, (1-p)*0.5);
-                g.fillCircle(x, y, r*(1 + p*2.2));
-                g.lineStyle(3*(1-p), 0xffbb00, (1-p)*0.9);
-                g.strokeCircle(x, y, r*(1.3 + p*2.8));
-                if (p >= 1) { g.destroy(); ev.remove(); }
-            }
-        });
-        if (typeof GameSettings === 'undefined' || GameSettings.screenShake)
-            this.cameras.main.shake(70, 0.0025);
+    _vfxRoche(x,y,r){
+        if(!GameSettings.explosions){if(GameSettings.screenShake)this.cameras.main.shake(40,0.001);return;}
+        const g=this.add.graphics().setDepth(20);let t=0;
+        const ev=this.time.addEvent({delay:16,repeat:31,callback:()=>{
+            t+=16;const p=t/500;g.clear();
+            g.fillStyle(0xff7700,(1-p)*0.5);g.fillCircle(x,y,r*(1+p*2.2));
+            g.lineStyle(3*(1-p),0xffbb00,(1-p)*0.9);g.strokeCircle(x,y,r*(1.3+p*2.8));
+            if(p>=1){g.destroy();ev.remove();}
+        }});
+        if(GameSettings.screenShake)this.cameras.main.shake(60,0.0025);
+    }
+    _vfxBirth(x,y,r){
+        const g=this.add.graphics().setDepth(20);let t=0;
+        const ev=this.time.addEvent({delay:16,repeat:37,callback:()=>{
+            t+=16;const p=t/600;g.clear();
+            g.lineStyle(2*(1-p),0x44ffcc,(1-p)*0.9);g.strokeCircle(x,y,r*(1+p*2.5));
+            g.fillStyle(0x88ffdd,(1-p)*0.3);g.fillCircle(x,y,r*(0.8+p));
+            if(p>=1){g.destroy();ev.remove();}
+        }});
     }
 
     // ── Speed ─────────────────────────────────────────────────────────────────
-    _changeSpeed(dir) {
-        this.currentSpeedIndex = Phaser.Math.Clamp(
-            this.currentSpeedIndex + dir, 0, this.speedFactors.length - 1);
-        this.speedFactor = this.speedFactors[this.currentSpeedIndex];
-        if (this._hudSpeedVal) this._hudSpeedVal.innerHTML = `${this.speedFactor}&times;`;
+    _changeSpeed(dir){
+        this.currentSpeedIndex=Phaser.Math.Clamp(this.currentSpeedIndex+dir,0,this.speedFactors.length-1);
+        this.speedFactor=this.speedFactors[this.currentSpeedIndex];
+        if(this._hudSpeedVal)this._hudSpeedVal.innerHTML=`${this.speedFactor}&times;`;
     }
+    _setSpeedZero(){this.currentSpeedIndex=0;this.speedFactor=0;if(this._hudSpeedVal)this._hudSpeedVal.innerHTML=`0&times;`;}
 
-    _setSpeedZero() {
-        this.currentSpeedIndex = 0;
-        this.speedFactor = this.speedFactors[0];
-        if (this._hudSpeedVal) this._hudSpeedVal.innerHTML = `${this.speedFactor}&times;`;
-    }
+    // ── DOM Menus ─────────────────────────────────────────────────────────────
+    _initDomMenu(){
+        this._menuEl    =document.getElementById('planet-menu');
+        this._starMenuEl=document.getElementById('star-menu');
 
-    // ── DOM planet editor menu ────────────────────────────────────────────────
-    _initDomMenu() {
-        this._menuEl = document.getElementById('planet-menu');
-        if (!this._menuEl) return;
-        this._inVx   = document.getElementById('planet-vx');
-        this._inVy   = document.getElementById('planet-vy');
-        this._inMass = document.getElementById('planet-mass');
+        // ─ Planet menu fields
+        this._inRadius=document.getElementById('planet-radius');
+        this._inVx    =document.getElementById('planet-vx');
+        this._inVy    =document.getElementById('planet-vy');
+        this._inMass  =document.getElementById('planet-mass');
+        this._inTemp  =document.getElementById('planet-temp');
 
-        const applyBtn     = document.getElementById('planet-apply');
-        const deleteBtn    = document.getElementById('planet-delete');
-        const deleteAllBtn = document.getElementById('planet-delete-all');
-        const moonBtn      = document.getElementById('planet-add-moon');
-
-        if (applyBtn) applyBtn.addEventListener('click', () => {
-            if (!this.selectedPlanet) return this.hidePlanetMenu();
-            const p = this.selectedPlanet;
-            p.vx = parseFloat(this._inVx.value)  || 0;
-            p.vy = parseFloat(this._inVy.value)   || 0;
-            const nm = parseFloat(this._inMass.value);
-            if (nm > 0) { p.mass = nm; p.radius = Math.sqrt(nm / 0.13); p.refreshSprite(); }
-            this.hidePlanetMenu(); this.scheduleSave();
+        document.getElementById('planet-apply')?.addEventListener('click',()=>{
+            if(!this.selectedPlanet)return this.hidePlanetMenu();
+            const p=this.selectedPlanet;
+            // Apply vx/vy from fields
+            p.vx=parseFloat(this._inVx.value)||0;
+            p.vy=parseFloat(this._inVy.value)||0;
+            const nr=parseFloat(this._inRadius.value);
+            const nm=parseFloat(this._inMass.value);
+            if(nr>0&&Math.abs(nr-p.radius)>0.1){p.radius=Math.max(4,Math.min(300,nr));p.mass=p.radius*p.radius*0.13;p.refreshSprite();}
+            else if(nm>0&&Math.abs(nm-p.mass)>0.1){p.mass=nm;p.radius=Math.sqrt(nm/0.13);p.refreshSprite();}
+            const nt=parseFloat(this._inTemp.value);
+            if(!isNaN(nt))p.temperature=Math.max(0,Math.min(20000,nt));
+            this.hidePlanetMenu();this.scheduleSave();
         });
-        if (deleteBtn) deleteBtn.addEventListener('click', () => {
-            if (!this.selectedPlanet) return this.hidePlanetMenu();
-            const dead = this.selectedPlanet;
-            this.deselectPlanet(); this._removePlanet(dead);
-            this.hidePlanetMenu(); this.scheduleSave();
-        });
-        if (deleteAllBtn) deleteAllBtn.addEventListener('click', () => {
-            this.clearAllPlanets(); this.hidePlanetMenu();
-        });
-        if (moonBtn) moonBtn.addEventListener('click', () => {
-            if (!this.selectedPlanet || moonBtn.disabled) return;
-            moonBtn.disabled = true;
-            moonBtn.style.opacity = '0.45';
-            this.addMoon(this.selectedPlanet);
-            setTimeout(() => {
-                moonBtn.disabled = false;
-                moonBtn.style.opacity = '';
-            }, 600);
+        // Live vx/vy editing
+        this._inVx.addEventListener('change',()=>{if(this.selectedPlanet)this.selectedPlanet.vx=parseFloat(this._inVx.value)||0;});
+        this._inVy.addEventListener('change',()=>{if(this.selectedPlanet)this.selectedPlanet.vy=parseFloat(this._inVy.value)||0;});
+        // Live temp editing
+        this._inTemp.addEventListener('input',()=>{
+            if(!this.selectedPlanet)return;
+            const t=parseFloat(this._inTemp.value);
+            if(!isNaN(t)){this.selectedPlanet.temperature=Math.max(0,Math.min(20000,t));this.selectedPlanet.updateTypeFromTemp();}
+            this._updateMenuInfoDisplays(this.selectedPlanet,false);
         });
 
-        this._domKeyListener = e => { if (e.key === 'Escape') this.hidePlanetMenu(); };
-        document.addEventListener('keydown', this._domKeyListener);
-        this._domOutsideClick = e => {
-            if (!this._menuEl || this._menuEl.contains(e.target)) return;
-            this.hidePlanetMenu();
+        document.getElementById('planet-add-moon')?.addEventListener('click',()=>{
+            if(!this.selectedPlanet)return this.hidePlanetMenu();
+            this.addMoon(this.selectedPlanet);this.hidePlanetMenu();
+        });
+        document.getElementById('planet-delete')?.addEventListener('click',()=>{
+            if(!this.selectedPlanet)return this.hidePlanetMenu();
+            const dead=this.selectedPlanet;this.deselectPlanet();this._removePlanet(dead);
+            this.hidePlanetMenu();this.scheduleSave();
+        });
+        document.getElementById('planet-delete-all')?.addEventListener('click',()=>{this.clearAllPlanets();this.hidePlanetMenu();});
+
+        // ─ Star menu fields
+        this._inStarRadius=document.getElementById('star-radius');
+        this._inStarVx    =document.getElementById('star-vx');
+        this._inStarVy    =document.getElementById('star-vy');
+        this._inStarMass  =document.getElementById('star-mass');
+        this._inStarTemp  =document.getElementById('star-temp');
+
+        document.getElementById('star-apply')?.addEventListener('click',()=>{
+            if(!this.selectedPlanet)return this.hideStarMenu();
+            const p=this.selectedPlanet;
+            p.vx=parseFloat(this._inStarVx.value)||0;
+            p.vy=parseFloat(this._inStarVy.value)||0;
+            const nr=parseFloat(this._inStarRadius.value);
+            const nm=parseFloat(this._inStarMass.value);
+            if(nr>0&&Math.abs(nr-p.radius)>0.1){p.radius=Math.max(PHY.STAR_MIN_RADIUS*0.3,Math.min(PHY.STAR_MAX_RADIUS*2,nr));p.mass=p.radius*p.radius*1.5;p.refreshSprite();}
+            else if(nm>0&&Math.abs(nm-p.mass)>1){p.mass=nm;p.radius=Math.sqrt(nm/1.5);p.refreshSprite();}
+            const nt=parseFloat(this._inStarTemp.value);
+            if(!isNaN(nt))p.temperature=Math.max(0,Math.min(50000,nt));
+            this.hideStarMenu();this.scheduleSave();
+        });
+        this._inStarVx.addEventListener('change',()=>{if(this.selectedPlanet)this.selectedPlanet.vx=parseFloat(this._inStarVx.value)||0;});
+        this._inStarVy.addEventListener('change',()=>{if(this.selectedPlanet)this.selectedPlanet.vy=parseFloat(this._inStarVy.value)||0;});
+        this._inStarTemp.addEventListener('input',()=>{
+            if(!this.selectedPlanet)return;
+            const t=parseFloat(this._inStarTemp.value);
+            if(!isNaN(t))this.selectedPlanet.temperature=Math.max(0,Math.min(50000,t));
+            this._updateMenuInfoDisplays(this.selectedPlanet,true);
+        });
+
+        document.getElementById('star-add-planet')?.addEventListener('click',()=>{
+            if(!this.selectedPlanet)return this.hideStarMenu();
+            this.addOrbitingPlanet(this.selectedPlanet);this.hideStarMenu();
+        });
+        document.getElementById('star-add-system')?.addEventListener('click',()=>{
+            // Does NOT close the menu
+            if(!this.selectedPlanet)return;
+            this.addSolarSystem(this.selectedPlanet);
+        });
+        document.getElementById('star-add-binary')?.addEventListener('click',()=>{
+            if(!this.selectedPlanet)return this.hideStarMenu();
+            this.addBinaryPartner(this.selectedPlanet);this.hideStarMenu();
+        });
+        document.getElementById('star-delete')?.addEventListener('click',()=>{
+            if(!this.selectedPlanet)return this.hideStarMenu();
+            const dead=this.selectedPlanet;this.deselectPlanet();this._removePlanet(dead);
+            this.hideStarMenu();this.scheduleSave();
+        });
+        document.getElementById('star-delete-all')?.addEventListener('click',()=>{this.clearAllPlanets();this.hideStarMenu();});
+
+        this._domKeyListener=e=>{if(e.key==='Escape'){this.hidePlanetMenu();this.hideStarMenu();}};
+        document.addEventListener('keydown',this._domKeyListener);
+        this._domOutsideClick=e=>{
+            if(this._menuEl&&!this._menuEl.contains(e.target))this.hidePlanetMenu();
+            if(this._starMenuEl&&!this._starMenuEl.contains(e.target))this.hideStarMenu();
         };
-        document.addEventListener('pointerdown', this._domOutsideClick);
+        document.addEventListener('pointerdown',this._domOutsideClick);
     }
 
-    showPlanetMenu(cx, cy) {
-        if (!this._menuEl || !this.selectedPlanet) return;
-        const p = this.selectedPlanet;
-        this._inVx.value   = p.vx.toFixed(2);
-        this._inVy.value   = p.vy.toFixed(2);
-        this._inMass.value = p.mass.toFixed(2);
-        let left = cx + 8, top = cy + 8;
-        const vw = window.innerWidth, vh = window.innerHeight;
-        this._menuEl.style.display = 'flex';
-        const rb = this._menuEl.getBoundingClientRect();
-        if (left + rb.width  + 10 > vw) left = vw - rb.width  - 10;
-        if (top  + rb.height + 10 > vh) top  = vh - rb.height - 10;
-        this._menuEl.style.left = `${left}px`;
-        this._menuEl.style.top  = `${top}px`;
+    showPlanetMenu(cx,cy){
+        if(!this._menuEl||!this.selectedPlanet)return;
+        this.hideStarMenu();
+        const p=this.selectedPlanet;
+        this._inRadius.value=p.radius.toFixed(1);
+        this._inVx.value=p.vx.toFixed(2);
+        this._inVy.value=p.vy.toFixed(2);
+        this._inMass.value=p.mass.toFixed(1);
+        this._inTemp.value=Math.round(p.temperature);
+        this._updateMenuInfoDisplays(p,false);
+        let left=cx+8,top=cy+8;
+        this._menuEl.style.display='flex';
+        const rb=this._menuEl.getBoundingClientRect();
+        if(left+rb.width+10>window.innerWidth) left=window.innerWidth-rb.width-10;
+        if(top+rb.height+10>window.innerHeight)top=window.innerHeight-rb.height-10;
+        this._menuEl.style.left=`${Math.max(0,left)}px`;
+        this._menuEl.style.top=`${Math.max(0,top)}px`;
     }
+    hidePlanetMenu(){if(this._menuEl)this._menuEl.style.display='none';}
 
-    hidePlanetMenu() { if (this._menuEl) this._menuEl.style.display = 'none'; }
+    showStarMenu(cx,cy){
+        if(!this._starMenuEl||!this.selectedPlanet)return;
+        this.hidePlanetMenu();
+        const p=this.selectedPlanet;
+        this._inStarRadius.value=p.radius.toFixed(1);
+        this._inStarVx.value=p.vx.toFixed(2);
+        this._inStarVy.value=p.vy.toFixed(2);
+        this._inStarMass.value=p.mass.toFixed(0);
+        this._inStarTemp.value=Math.round(p.temperature);
+        this._updateMenuInfoDisplays(p,true);
+        let left=cx+8,top=cy+8;
+        this._starMenuEl.style.display='flex';
+        const rb=this._starMenuEl.getBoundingClientRect();
+        if(left+rb.width+10>window.innerWidth) left=window.innerWidth-rb.width-10;
+        if(top+rb.height+10>window.innerHeight)top=window.innerHeight-rb.height-10;
+        this._starMenuEl.style.left=`${Math.max(0,left)}px`;
+        this._starMenuEl.style.top=`${Math.max(0,top)}px`;
+    }
+    hideStarMenu(){if(this._starMenuEl)this._starMenuEl.style.display='none';}
 
     // ── Persistence ───────────────────────────────────────────────────────────
-    scheduleSave() {
-        if (this._saveTimeout) clearTimeout(this._saveTimeout);
-        this._saveTimeout = setTimeout(() => this.savePlanets(), 1500);
+    scheduleSave(){if(this._saveTimeout)clearTimeout(this._saveTimeout);this._saveTimeout=setTimeout(()=>this.savePlanets(),1500);}
+    savePlanets(){
+        try{localStorage.setItem(this._saveKey,JSON.stringify(
+            this.planetList.filter(p=>!p.isDebris).map(p=>p.getState())));}catch(e){console.warn('Save failed',e);}
     }
-    savePlanets() {
-        try {
-            localStorage.setItem(this._saveKey, JSON.stringify(
-                this.planetList.filter(p => !p.isDebris).map(p => p.getState())));
-        } catch(e) { console.warn('Save failed', e); }
-    }
-    loadPlanets() {
-        try {
-            const raw = localStorage.getItem(this._saveKey);
-            if (!raw) return;
-            const arr = JSON.parse(raw);
-            if (!Array.isArray(arr)) return;
-            for (const s of arr) this.createPlanetAtPosition(s.x ?? 400, s.y ?? 300, s);
-        } catch(e) { console.warn('Load failed', e); }
+    loadPlanets(){
+        try{const raw=localStorage.getItem(this._saveKey);if(!raw)return;
+            const arr=JSON.parse(raw);if(!Array.isArray(arr))return;
+            for(const s of arr)this.createPlanetAtPosition(s.x??400,s.y??300,s);}catch(e){console.warn('Load failed',e);}
     }
 
-    // ── Colour utilities ──────────────────────────────────────────────────────
-    _blendColors(cA, cB, t) {
-        const rA=(cA>>16)&0xff, gA=(cA>>8)&0xff, bA=cA&0xff;
-        const rB=(cB>>16)&0xff, gB=(cB>>8)&0xff, bB=cB&0xff;
-        return (Math.round(rA+(rB-rA)*t)<<16)|(Math.round(gA+(gB-gA)*t)<<8)|Math.round(bA+(bB-bA)*t);
+    // ── Color utils ───────────────────────────────────────────────────────────
+    _blendColors(cA,cB,t){
+        const rA=(cA>>16)&0xff,gA=(cA>>8)&0xff,bA=cA&0xff;
+        const rB=(cB>>16)&0xff,gB=(cB>>8)&0xff,bB=cB&0xff;
+        return(Math.round(rA+(rB-rA)*t)<<16)|(Math.round(gA+(gB-gA)*t)<<8)|Math.round(bA+(bB-bA)*t);
     }
-    _tintColor(c, f) {
-        return (Math.min(255,Math.round(((c>>16)&0xff)*f))<<16) |
-               (Math.min(255,Math.round(((c>>8)&0xff)*f))<<8)   |
+    _tintColor(c,f){
+        return(Math.min(255,Math.round(((c>>16)&0xff)*f))<<16)|
+               (Math.min(255,Math.round(((c>>8)&0xff)*f))<<8)|
                 Math.min(255,Math.round((c&0xff)*f));
     }
 }
 
 // =============================================================================
-//  PHASER CONFIG + BOOT
+//  PHASER CONFIG
 // =============================================================================
 const config = {
-    type:            Phaser.AUTO,
-    width:           window.innerWidth,
-    height:          window.innerHeight,
-    backgroundColor: '#000812',
-    scene:           [OpeningScreen, MainGame, Options, LoadGame],
-    scale: {
-        mode:            Phaser.Scale.RESIZE,
-        autoCenter:      Phaser.Scale.CENTER_BOTH,
-    },
-    input: {
-        activePointers: 3,
-    },
+    type:Phaser.AUTO,
+    width:window.innerWidth, height:window.innerHeight,
+    backgroundColor:'#000812',
+    scene:[OpeningScreen,MainGame,Options,LoadGame],
+    scale:{mode:Phaser.Scale.RESIZE,autoCenter:Phaser.Scale.CENTER_BOTH},
+    input:{activePointers:3},
 };
-
-const game = new Phaser.Game(config);
-
-window.addEventListener('resize', () => {
-    game.scale.resize(window.innerWidth, window.innerHeight);
-});
+const game=new Phaser.Game(config);
+window.addEventListener('resize',()=>game.scale.resize(window.innerWidth,window.innerHeight));
 </script>
 </body>
 </html>
